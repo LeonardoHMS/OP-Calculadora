@@ -4,6 +4,11 @@ def calcular_horario(lista):
     '''Função para capturar o horário fornecido pelo usuário;
     Fazer o calculo do tempo entre os dois horários com retorno em minutos
     lista -> Recebe uma lista com todas as informações necessárias para o cálculo
+    inicio: Horário inicial da produção
+    fim: Horário do término da produção
+    operadores: Quantidade de operadores para a produção
+    com_almoco: Subtrair o horário de almoço entre a produção
+    sem_almoco: Não incluir o horário de almoço entre a produção
     '''
     try:
         inicio, fim, operadores, com_almoco, sem_almoco = lista
