@@ -9,9 +9,10 @@ def calcular_horario(lista):
     operadores: Quantidade de operadores para a produção
     com_almoco: Subtrair o horário de almoço entre a produção
     sem_almoco: Não incluir o horário de almoço entre a produção
+    parada: Tempo de maquina parada sem produzir
     '''
     try:
-        inicio, fim, operadores, com_almoco, sem_almoco = lista
+        inicio, fim, operadores, com_almoco, sem_almoco, parada = lista
         for item in inicio:
             if item.isnumeric() == False:
                 inicio = inicio.replace(item, '')
@@ -32,8 +33,8 @@ def calcular_horario(lista):
         fim = timedelta(hours= fim_horas, minutes= fim_minutos, seconds= 00)
         resultado = fim - inicio
         if com_almoco:
-            return [(resultado.seconds / 60 - 90), (resultado.seconds / 60 - 90) * int(operadores)]
+            return [(resultado.seconds / 60 - 90) - int(parada), (resultado.seconds / 60 - 90) * int(operadores) - (int(parada) * int(operadores))]
         elif sem_almoco:
-            return [(resultado.seconds / 60), (resultado.seconds / 60) * int(operadores)]
+            return [(resultado.seconds / 60) - int(parada), (resultado.seconds / 60) * int(operadores) - (int(parada) * int(operadores))]
     except:
         return False
