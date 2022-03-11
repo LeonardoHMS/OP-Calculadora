@@ -15,8 +15,9 @@ class program_painel:
             ],
             [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input)],
             [sg.Checkbox('Com almoço', key= 'com_almoco'), sg.Checkbox(f'{"Sem almoço":<20}', key = 'sem_almoco'), sg.Image(r'static/papaleguas.png')],
-            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link')],
+            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Button('Planilhas')],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)],
+            [sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link')]
         ]
 
         # Janela
@@ -30,6 +31,8 @@ class program_painel:
                 event, self.values = self.window.Read()
                 if event == sg.WIN_CLOSED:
                     break
+                if event == 'Planilhas':
+                    print('teste')
                 if event == 'Limpar':
                     self.window.FindElement('__Output__').update('')
                 if event == 'link':
