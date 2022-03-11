@@ -60,8 +60,3 @@ class program_painel:
                         print(f'ERRO, Verifique as informações!')
             except:
                 print('ERRO, preencha todos os campos !')
-
-
-class sap_excel(self):
-    
-    
