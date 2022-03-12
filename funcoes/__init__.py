@@ -38,3 +38,14 @@ def calcular_horario(lista):
             return [(resultado.seconds / 60) - int(parada), (resultado.seconds / 60) * int(operadores) - (int(parada) * int(operadores))]
     except:
         return False
+
+
+def text_popup():
+    texto = """ 
+            Inicio: Inicio da produção
+            Fim: Fim da produção
+            Oprs.: Quantidade de operadores
+            Com almoço: Inclui o intervalo de almoço
+            Sem almoco: Sem o intervalo de almoço
+            """
+    return texto
