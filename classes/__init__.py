@@ -37,6 +37,8 @@ class program_painel:
                     webbrowser.open('https://github.com/LeonardoHMS')
                 if event == 'Ajuda':
                     sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/papaleguas.ico')
+                if event == 'Cabecalho':
+                    funcoes.organizar_cabecalho()
                 if event == 'Confirmar':
                     inicio = self.values['inicio']
                     fim = self.values['fim']

@@ -1,4 +1,5 @@
 from datetime import timedelta
+import pandas as pd
 
 def calcular_horario(lista):
     '''Função para capturar o horário fornecido pelo usuário;
@@ -49,3 +50,7 @@ def text_popup():
             Sem almoco: Sem o intervalo de almoço
             """
     return texto
+
+
+def organizar_cabecalho():
+    print('a')
