@@ -53,4 +53,6 @@ def text_popup():
 
 
 def organizar_cabecalho():
-    print('a')
+    planilha = pd.read_excel(r"C:\Users\Leonardo Mantovani\Desktop\cabecalho.xlsx")
+    planilha['Qtde Falta'] = planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)']
+    print(planilha['Qtde Falta'])
