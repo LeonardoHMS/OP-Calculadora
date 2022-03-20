@@ -38,9 +38,9 @@ def calcular_horario(lista):
         elif sem_almoco:
             return [(resultado.seconds / 60) - int(parada), (resultado.seconds / 60) * int(operadores) - (int(parada) * int(operadores))]
     except:
-        return False
+        return False # Os retornos de falsos são para printar o erro no output do programa
 
-
+# Função criada para não ficar muitas informações dentro da classe, pode ser usada para mais Textos futuramente !!!
 def text_popup():
     texto = """ 
             Inicio: Inicio da produção
@@ -51,7 +51,7 @@ def text_popup():
             """
     return texto
 
-
+# Função para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, dir_newcabecalho):
     planilha = pd.read_excel(f"{dir_cabecalho}")
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
