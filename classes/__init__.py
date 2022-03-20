@@ -5,12 +5,16 @@ import webbrowser
 # Retirando as informaçoes do arquivo de texto para as variaveis assumirem o diretório para as planilhas
 diretorio = 'static\local_arquivo'
 local_planilha = open(diretorio, 'r+')
-dir_cabecalho = dir_new_cabecalho = 0
+dir_cabecalho = dir_new_cabecalho = dir_componentes = dir_new_componentes = 0
 for cont, line in enumerate(local_planilha):
     if cont == 0:
         dir_cabecalho = line[:-1]
+    elif cont == 1:
+        dir_new_cabecalho = line[:-1]
+    elif cont == 2 :
+        dir_componentes = line[:-1]
     else:
-        dir_new_cabecalho = line
+        dir_new_componentes = line
 # Classe principal da criação do programa
 class program_painel:
     def __init__(self):
