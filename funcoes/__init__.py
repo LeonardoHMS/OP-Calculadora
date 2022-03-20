@@ -52,9 +52,9 @@ def text_popup():
     return texto
 
 
-def organizar_cabecalho():
-    planilha = pd.read_excel(r"C:\Users\Leonardo Mantovani\Desktop\cabecalho.xlsx")
+def organizar_cabecalho(dir_cabecalho, dir_newcabecalho):
+    planilha = pd.read_excel(f"{dir_cabecalho}")
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
-    planilha.to_excel(r'C:\Users\Leonardo Mantovani\Desktop\novaplanilha.xlsx', index= False)
+    planilha.to_excel(f'{dir_newcabecalho}', index= False)
