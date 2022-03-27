@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 import funcoes
 import webbrowser
-
+import keyboard
 
 # Retirando as informaçoes do arquivo de texto para as variaveis assumirem o diretório para as planilhas
 diretorio = 'static\local_arquivo'
