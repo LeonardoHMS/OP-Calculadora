@@ -1,21 +1,8 @@
+from types import NoneType
 import PySimpleGUI as sg
 import funcoes
 import webbrowser
 
-
-# Retirando as informaçoes do arquivo de texto para as variaveis assumirem o diretório para as planilhas
-diretorio = 'static\local_arquivo'
-local_planilha = open(diretorio, 'r+')
-dir_cabecalho = dir_new_cabecalho = dir_componentes = dir_new_componentes = 0
-for cont, line in enumerate(local_planilha):
-    if cont == 0:
-        dir_cabecalho = line[:-1]
-    elif cont == 1:
-        dir_new_cabecalho = line[:-1]
-    elif cont == 2 :
-        dir_componentes = line[:-1]
-    else:
-        dir_new_componentes = line
 # Classe principal da criação do programa
 class program_painel:
     def __init__(self):
@@ -30,7 +17,7 @@ class program_painel:
             sg.Input(key= 'fim', size= size_Input,)],
             [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input)],
             [sg.Checkbox('Com almoço', key= 'com_almoco'), sg.Checkbox(f'{"Sem almoço":<20}', key = 'sem_almoco'), sg.Image(r'static/papaleguas.png')],
-            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link')],
+            [sg.Button('Confirmar'), sg.Button('Limpar', ), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link', text_color=('blue'))],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)],
         ]
 
@@ -46,9 +33,23 @@ class program_painel:
                 if event == sg.WIN_CLOSED or event == 'Sair':
                     break
                 if event == 'Cabeçalho': # Aqui será usada a função do DataScience para pegar os dados somente das produções que foram finalizadas com valor total
-                    funcoes.organizar_cabecalho(dir_cabecalho, dir_new_cabecalho)
+                    try:
+                        arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/papaleguas.ico')
+                        funcoes.organizar_cabecalho(arquivo)
+                        print('Planilha concluída')
+                    except: 
+                        pass
                 if event == 'Componentes': # Aqui será usada a função do DataScience para pegar os dados de consumo dos componentes
-                    funcoes.organizar_componentes(dir_componentes, dir_new_componentes)
+                    try:
+                        arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/papaleguas.ico')
+                        funcoes.organizar_componentes(arquivo)
+                        print('Planilha concluída')
+                    except:
+                        pass
+                if event == 'Definições': # Escolha o destino para salvar as planilhas
+                    destino = sg.popup_get_folder('Escolha o destino para salvar as planilhas', 'Salvar em', icon=r'static/papaleguas.ico')
+                    if type(destino) != NoneType and len(destino) != 0:
+                        funcoes.escolher_diretorio(destino)
                 if event == 'Limpar': # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                     self.window.FindElement('__Output__').update('')
                 if event == 'link':
@@ -73,4 +74,3 @@ class program_painel:
                         print(f'ERRO, Verifique as informações!')
             except: # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
                 print('ERRO, preencha todos os campos !')
-
