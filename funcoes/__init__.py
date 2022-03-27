@@ -46,15 +46,44 @@ def text_popup():
             Inicio: Inicio da produção
             Fim: Fim da produção
             Oprs.: Quantidade de operadores
+            Parada: Tempo parado sem produzir
             Com almoço: Inclui o intervalo de almoço
             Sem almoco: Sem o intervalo de almoço
             """
     return texto
 
 # Função para Data Science para analisar somente as produções que foram finalizadas
-def organizar_cabecalho(dir_cabecalho, dir_newcabecalho):
-    planilha = pd.read_excel(f"{dir_cabecalho}")
+def organizar_cabecalho(dir_cabecalho):
+    destino = variavel_diretorio()
+    planilha = pd.read_excel(f'{dir_cabecalho}')
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
-    planilha.to_excel(f'{dir_newcabecalho}', index= False)
+    planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index= False)
+
+
+def organizar_componentes(dir_componentes):
+    destino = variavel_diretorio()
+    planilha = pd.read_excel(f'{dir_componentes}')
+    planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+    planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index= False)
+
+def criar_sistema():
+    try:
+        sistema_arquivo = 'static\diretorios'
+        arquivotxt = open(sistema_arquivo, 'r+')
+    except FileNotFoundError:
+        arquivotxt = open(sistema_arquivo, 'w+')
+        arquivotxt.writelines('')
+    return arquivotxt
+
+def escolher_diretorio(diretorio):
+    arquivotxt = criar_sistema()
+    arquivotxt = open('static\diretorios', 'w')
+    arquivotxt.write(f'{diretorio}')
+    arquivotxt.close()
+
+def variavel_diretorio():
+    destino = open('static\diretorios', 'r+')
+    for linha in destino:      
+        return linha
