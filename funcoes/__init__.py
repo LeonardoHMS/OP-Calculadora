@@ -1,4 +1,5 @@
 from datetime import timedelta
+from operator import index
 import pandas as pd
 
 def calcular_horario(lista):
@@ -53,8 +54,14 @@ def text_popup():
 
 # Função para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, dir_newcabecalho):
-    planilha = pd.read_excel(f"{dir_cabecalho}")
+    planilha = pd.read_excel(f'{dir_cabecalho}')
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
     planilha.to_excel(f'{dir_newcabecalho}', index= False)
+
+
+def organizar_componentes(dir_componentes, dir_newcomponentes):
+    planilha = pd.read_excel(f'{dir_componentes}')
+    planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+    planilha.to_excel(f'{dir_newcomponentes}', index= False)

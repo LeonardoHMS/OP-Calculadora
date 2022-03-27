@@ -2,6 +2,7 @@ import PySimpleGUI as sg
 import funcoes
 import webbrowser
 
+
 # Retirando as informaçoes do arquivo de texto para as variaveis assumirem o diretório para as planilhas
 diretorio = 'static\local_arquivo'
 local_planilha = open(diretorio, 'r+')
@@ -46,6 +47,8 @@ class program_painel:
                     break
                 if event == 'Cabeçalho': # Aqui será usada a função do DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                     funcoes.organizar_cabecalho(dir_cabecalho, dir_new_cabecalho)
+                if event == 'Componentes': # Aqui será usada a função do DataScience para pegar os dados de consumo dos componentes
+                    funcoes.organizar_componentes(dir_componentes, dir_new_componentes)
                 if event == 'Limpar': # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                     self.window.FindElement('__Output__').update('')
                 if event == 'link':
