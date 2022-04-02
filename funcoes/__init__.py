@@ -53,6 +53,7 @@ def organizar_cabecalho(dir_cabecalho):
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
+    planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
     planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index= False)
 
 
@@ -60,6 +61,7 @@ def organizar_componentes(dir_componentes):
     destino = variavel_diretorio()
     planilha = pd.read_excel(f'{dir_componentes}')
     planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+    planilha['OBS'] = ''
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index= False)
 
 
