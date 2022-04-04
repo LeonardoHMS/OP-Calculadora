@@ -84,5 +84,5 @@ def escolher_diretorio(diretorio):
 
 def variavel_diretorio():
     destino = open('static\diretorios', 'r+')
-    for linha in destino:      
+    for linha in destino:
         return linha
