@@ -24,11 +24,11 @@ class SapGui(object): # Classe para abrir o sistema SAP
             self.session.findById("wnd[0]").sendVKey(0)
         except:
             pass
-        self.session.findById("wnd[0]/tbar[0]/okcd").Text = "/o"
+        self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
         self.session.findById("wnd[0]").sendVKey(0)
-        self.session.findById("wnd[0]/tbar[0]/okcd").Text = "/n"
+        self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
         self.session.findById("wnd[0]").sendVKey(0)
-        self.session.findById("wnd[0]/tbar[0]/okcd").Text = transacao # Transação que deseja abrir
+        self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao # Transação que deseja abrir
         self.session.findById("wnd[0]").sendVKey(0)
 
 
