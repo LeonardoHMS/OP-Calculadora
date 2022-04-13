@@ -6,24 +6,28 @@ import time
 class SapGui(object): # Classe para abrir o sistema SAP
     def __init__(self):
         # Abrir o SAP
-        self.path = r'C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe'
-        subprocess.Popen(self.path)
-
-        self.SapGuiAuto = win32.GetObject('SAPGUI')
-        aplicativo = self.SapGuiAuto.GetScriptingEngine     
-        self.connection = aplicativo.OpenConnection('Nome de Acesso', True) # Informe o nome de acesso ao SAP
-        time.sleep(5)
-        self.session = self.connection.Children(0)
-        self.session.findById('wnd[0]').maximize
-
-
-    def conexaoSap(self, transacao): # Loga no Sap e entra na transação fornecida
         try:
+            self.path = r'C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe'
+            subprocess.Popen(self.path)
+            time.sleep(3)
+
+            self.SapGuiAuto = win32.GetObject('SAPGUI')
+            aplicativo = self.SapGuiAuto.GetScriptingEngine     
+            self.connection = aplicativo.OpenConnection('Nome de Acesso', True) # Informe o nome de acesso ao SAP
+            time.sleep(3)
+
+            self.session = self.connection.Children(0)
+            self.session.findById('wnd[0]').maximize
             self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = "usuario" # Informe seu usuário de login
             self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = "senha"   # Informe sua senha de login
             self.session.findById("wnd[0]").sendVKey(0)
         except:
-            pass
+            self.SapGuiAuto = win32.GetObject('SAPGUI')
+            aplicativo = self.SapGuiAuto.GetScriptingEngine
+            self.session = self.connection.Children(0)
+
+
+    def conexaoSap(self, transacao): # Loga no Sap e entra na transação fornecida
         self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
         self.session.findById("wnd[0]").sendVKey(0)
         self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
@@ -59,6 +63,5 @@ class SapGui(object): # Classe para abrir o sistema SAP
 
 if __name__ == '__main__':
     Sap_test = SapGui()
-    Sap_test.sapLogin()
     Sap_test.conexaoSap('COOIS')
     Sap_test.SapCooisXlsx()
