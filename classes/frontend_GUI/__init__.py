@@ -78,3 +78,8 @@ class program_painel:
             # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
             except:
                 print('ERRO, preencha todos os campos necessários!')
+
+
+if __name__ == '__main__':
+    painel = program_painel()
+    painel.start_program()
