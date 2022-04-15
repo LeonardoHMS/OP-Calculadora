@@ -1,18 +1,20 @@
 from datetime import timedelta
 import pandas as pd
 
-def calcular_horario(inicio, fim, operadores, com_almoco, sem_almoco, parada):
+def calcular_horario(inicio, fim, operadores, parada):
     '''Função para capturar o horário fornecido pelo usuário;
     --> Faz o calculo do tempo entre os dois horários com retorno em minutos
     - inicio: Horário inicial da produção
     - fim: Horário do término da produção
     - operadores: Quantidade de operadores para a produção
-    - com_almoco: Subtrair o horário de almoço entre a produção
-    - sem_almoco: Não incluir o horário de almoço entre a produção
     - parada: Tempo de maquina parada sem produzir
     '''
+    inicio_almoco = timedelta(hours=int(11), minutes=int(35), seconds=int(00))
+    fim_almoco = timedelta(hours=int(13), minutes=int(5), seconds=int(00))
     if parada == '':
         parada = 0
+    if operadores == '':
+        operadores = 1
     try:
         for item in inicio:
             if item.isnumeric() == False:
@@ -22,14 +24,12 @@ def calcular_horario(inicio, fim, operadores, com_almoco, sem_almoco, parada):
                 fim = fim.replace(item, '')
         if len(inicio) != 4 or len(fim) != 4:
             return False
-        elif com_almoco and sem_almoco:
-            return False
-        inicio = timedelta(hours= int(inicio[:2]), minutes= int(inicio [2:]), seconds= 00)
+        inicio = timedelta(hours= int(inicio[:2]), minutes= int(inicio[2:]), seconds= 00)
         fim = timedelta(hours= int(fim[:2]), minutes= int(fim[2:]), seconds= 00)
         resultado = (fim - inicio).seconds
-        if com_almoco:
+        if inicio < inicio_almoco and fim > fim_almoco:
             return ((resultado / 60 - 90) - int(parada), (resultado / 60 - 90) * int(operadores) - (int(parada) * int(operadores)))
-        elif sem_almoco:
+        else:
             return ((resultado / 60) - int(parada), (resultado / 60) * int(operadores) - (int(parada) * int(operadores)))
     except:
         return False # Os retornos de falsos são para printar o erro no output do programa
@@ -41,8 +41,6 @@ def text_popup():
             Fim: Fim da produção
             Oprs.: Quantidade de operadores
             Parada: Tempo parado sem produzir
-            Com almoço: Inclui o intervalo de almoço
-            Sem almoco: Sem o intervalo de almoço
             """
     return texto
 
@@ -83,6 +81,6 @@ def escolher_diretorio(diretorio):
 
 
 def variavel_diretorio():
-    destino = open('static\diretorios', 'r+')
-    for linha in destino:
-        return linha
+    destino = open('static\diretorios', 'r')
+    diretorio = destino.readline()
+    return diretorio

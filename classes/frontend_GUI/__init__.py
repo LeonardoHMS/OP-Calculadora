@@ -15,12 +15,10 @@ class program_painel:
             )],
             [sg.Text('Inicio'), sg.Input(key = 'inicio', size= size_Input), sg.Text('Fim'),
             sg.Input(key= 'fim', size= size_Input,)],
-            [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input)],
-            [sg.Checkbox('Com almoço', key= 'com_almoco'), sg.Checkbox(f'{"Sem almoço":<20}', key = 'sem_almoco'), sg.Image(r'static/papaleguas.png')],
+            [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input), sg.Image(r'static/papaleguas.png')],
             [sg.Button('Confirmar'), sg.Button('Limpar', ), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link', text_color=('blue'))],
-            [sg.Output(size= (35, 15), key='__Output__', font= font_str)],
+            [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
-
         # Janela
         self.window = sg.Window('OP Calculator v1.8', icon=r'static/papaleguas.ico').layout(layout)
     # Função da classe para a construção de todos os eventos de botões
@@ -66,8 +64,8 @@ class program_painel:
                     sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/papaleguas.ico')
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
-                    resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'], self.values['operadores'],
-                    self.values['com_almoco'], self.values['sem_almoco'], self.values['parada'].strip())) # Função para calcular o horário
+                    resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
+                    self.values['operadores'], self.values['parada'].strip())) # Função para calcular o horário
                     # Irá exibir os resultados no Output
                     if resultados != False:
                         print(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
@@ -77,7 +75,7 @@ class program_painel:
                         print(f'ERRO, Verifique as informações!')
             # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
             except:
-                print('ERRO, preencha todos os campos necessários!')
+                print('ERRO, verifique as informações fornecidas!')
 
 
 if __name__ == '__main__':
