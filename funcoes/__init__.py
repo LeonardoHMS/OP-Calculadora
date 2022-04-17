@@ -83,4 +83,13 @@ def escolher_diretorio(diretorio):
 def variavel_diretorio():
     destino = open('static\diretorios', 'r')
     diretorio = destino.readline()
-    return diretorio
+    return diretorio[11:]
+
+def variavel_loginSenha():
+    destino = open('static\diretorios', 'r')
+    for cont, lines in enumerate(destino.readlines()):
+        if cont == 1:
+            usuario = lines[7:-1]
+        if cont == 2:
+            senha = lines[7:]
+    return usuario,senha

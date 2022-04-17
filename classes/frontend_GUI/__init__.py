@@ -2,6 +2,7 @@ from types import NoneType
 import PySimpleGUI as sg
 import funcoes
 import webbrowser
+from classes import acessoSAP
 
 # Classe principal da criação do programa
 class program_painel:
@@ -10,13 +11,14 @@ class program_painel:
         size_Input = (8,1)
         sg.change_look_and_feel('DarkGrey4')
         # Layout do programa
-        layout = [
-            [sg.Menu([['Arquivos', ['Ajuda', 'Sair']], ['Planilhas', ['Cabeçalho', 'Componentes', 'Definições']]], # Menu da parte de cima do programa
-            )],
+        layout = [# Menu da parte de cima do programa
+            [sg.Menu([['Arquivos', ['Ajuda', 'Sair']],
+                ['Planilhas', ['Cabeçalho', 'Componentes', 'Definições']],
+                ['Automático',['SAP - Cabeçalho']]])],# Menu da parte de cima do programa
             [sg.Text('Inicio'), sg.Input(key = 'inicio', size= size_Input), sg.Text('Fim'),
             sg.Input(key= 'fim', size= size_Input,)],
             [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input), sg.Image(r'static/papaleguas.png')],
-            [sg.Button('Confirmar'), sg.Button('Limpar', ), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link', text_color=('blue'))],
+            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link', text_color=('blue'))],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
         # Janela
@@ -32,27 +34,24 @@ class program_painel:
                     break
                 # Aqui será usada a função do DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
-                    try:
-                        arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/papaleguas.ico')
-                        funcoes.organizar_cabecalho(arquivo)
-                        print('Planilha concluída')
-                    except:
-                        print('Erro nas informações fornecidas')
-                        pass
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/papaleguas.ico')
+                    funcoes.organizar_cabecalho(arquivo)
+                    print('Planilha concluída')
                 # Aqui será usada a função do DataScience para pegar os dados de consumo dos componentes
                 if event == 'Componentes':
-                    try:
-                        arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/papaleguas.ico')
-                        funcoes.organizar_componentes(arquivo)
-                        print('Planilha concluída')
-                    except:
-                        print('Erro nas informações fornecidas')
-                        pass
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/papaleguas.ico')
+                    funcoes.organizar_componentes(arquivo)
+                    print('Planilha concluída')
                 # Escolha o destino para salvar as planilhas
                 if event == 'Definições':
-                    destino = sg.popup_get_folder('Escolha o destino para salvar as planilhas', 'Salvar em', icon=r'static/papaleguas.ico')
+                    destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/papaleguas.ico', default_path=funcoes.variavel_diretorio())
                     if type(destino) != NoneType and len(destino) != 0:
                         funcoes.escolher_diretorio(destino)
+                if event == 'SAP - Cabeçalho':
+                    usuario, senha = funcoes.variavel_loginSenha()
+                    Sap_cab = acessoSAP.SapGui(usuario, senha)
+                    Sap_cab.conexaoSap('COOIS')
+                    Sap_cab.SapCooisXlsx()
                 # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                 if event == 'Limpar':
                     self.window.FindElement('__Output__').update('')

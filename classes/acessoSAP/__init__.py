@@ -4,30 +4,34 @@ import subprocess
 import time
 
 class SapGui(object): # Classe para abrir o sistema SAP
-    def __init__(self):
+    def __init__(self, users, password, acess_name):
+        self.users = users
+        self.password = password
+        self.acess_name = acess_name
         # Abrir o SAP
         try:
+            self.SapGuiAuto = win32.GetObject('SAPGUI')
+            aplicativo = self.SapGuiAuto.GetScriptingEngine
+            self.session = self.connection.Children(0)
+        
+        except:
             self.path = r'C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe'
             subprocess.Popen(self.path)
             time.sleep(3)
 
             self.SapGuiAuto = win32.GetObject('SAPGUI')
             aplicativo = self.SapGuiAuto.GetScriptingEngine     
-            self.connection = aplicativo.OpenConnection('Nome de Acesso', True) # Informe o nome de acesso ao SAP
+            self.connection = aplicativo.OpenConnection(acess_name, True) # Informe o nome de acesso ao SAP
             time.sleep(3)
 
             self.session = self.connection.Children(0)
             self.session.findById('wnd[0]').maximize
-            self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = "usuario" # Informe seu usuário de login
-            self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = "senha"   # Informe sua senha de login
+            self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = self.users # Informe seu usuário de login
+            self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = self.password # Informe sua senha de login
             self.session.findById("wnd[0]").sendVKey(0)
-        except:
-            self.SapGuiAuto = win32.GetObject('SAPGUI')
-            aplicativo = self.SapGuiAuto.GetScriptingEngine
-            self.session = self.connection.Children(0)
 
 
-    def conexaoSap(self, transacao): # Loga no Sap e entra na transação fornecida
+    def conexaoSap(self, transacao): # Entra na transação fornecida
         self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
         self.session.findById("wnd[0]").sendVKey(0)
         self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
