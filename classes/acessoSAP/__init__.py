@@ -55,6 +55,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST2").text = "ence"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/chkP_KZ_E2").setFocus
         self.session.findById("wnd[0]").sendVKey(8)
+        time.sleep(10)
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").currentCellColumn = "MATXT"
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").contextMenu
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectContextMenuItem("&XXL")
@@ -63,9 +64,10 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").setFocus
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").caretPosition = 4
         self.session.findById("wnd[1]/tbar[0]/btn[0]").press
+        time.sleep(4)
 
 
 if __name__ == '__main__':
-    Sap_test = SapGui()
+    Sap_test = SapGui('usuario', 'senha', 'acesso')
     Sap_test.conexaoSap('COOIS')
     Sap_test.SapCooisXlsx()

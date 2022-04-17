@@ -14,11 +14,11 @@ class program_painel:
         layout = [# Menu da parte de cima do programa
             [sg.Menu([['Arquivos', ['Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Definições']],
-                ['Automático',['SAP - Cabeçalho']]])],# Menu da parte de cima do programa
+                ['Automático',['SAP - Cabeçalho', 'Definir login']]])],# Menu da parte de cima do programa
             [sg.Text('Inicio'), sg.Input(key = 'inicio', size= size_Input), sg.Text('Fim'),
             sg.Input(key= 'fim', size= size_Input,)],
             [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input), sg.Image(r'static/papaleguas.png')],
-            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events= True, key= 'link', text_color=('blue'))],
+            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events=True, key= 'link', text_color=('blue'), tooltip='acessar')],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
         # Janela
@@ -48,10 +48,14 @@ class program_painel:
                     if type(destino) != NoneType and len(destino) != 0:
                         funcoes.escolher_diretorio(destino)
                 if event == 'SAP - Cabeçalho':
-                    usuario, senha = funcoes.variavel_loginSenha()
-                    Sap_cab = acessoSAP.SapGui(usuario, senha)
+                    usuario, senha, acessosap = funcoes.variavel_loginSAP()
+                    Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.SapCooisXlsx()
+                    arquivo = r'C://Users/racao01/Desktop/EXPORT.xlsx'
+                    funcoes.organizar_cabecalho(arquivo)
+                if event == 'Definir login':
+                    LoginSAP()
                 # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                 if event == 'Limpar':
                     self.window.FindElement('__Output__').update('')
@@ -75,6 +79,24 @@ class program_painel:
             # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
             except:
                 print('ERRO, verifique as informações fornecidas!')
+
+
+class LoginSAP():
+    def __init__(self):
+        size_Input = (8,1)
+        sg.change_look_and_feel('DarkGrey4')
+        layout = [
+            [sg.Text('Login '), sg.Input(key='login', size=size_Input)],
+            [sg.Text('Senha'), sg.Input(key='senha', size=size_Input, password_char='*')],
+            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=(15,1))],
+            [sg.Button('Confirmar')]
+        ]
+        self.window = sg.Window('Login do SAP', icon=r'static/papaleguas.ico').layout(layout)
+        event, self.values = self.window.Read()
+        if event == 'Confirmar':
+            funcoes.escolher_loginSAP(self.values['login'], self.values['senha'], self.values['acessosap'])
+            print('Dados Fornecidos!!')
+            self.window.close()
 
 
 if __name__ == '__main__':

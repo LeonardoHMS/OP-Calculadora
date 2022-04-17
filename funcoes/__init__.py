@@ -67,29 +67,55 @@ def criar_sistema():
     try:
         sistema_arquivo = 'static\diretorios'
         arquivotxt = open(sistema_arquivo, 'r+')
+        arquivotxt.close()
     except FileNotFoundError:
         arquivotxt = open(sistema_arquivo, 'w+')
-        arquivotxt.writelines('')
+        arquivotxt.writelines('Diretorio: \nLogin: \nSenha: \nAcessoSAP: ')
+        arquivotxt.close()
     return arquivotxt
 
 
 def escolher_diretorio(diretorio):
     arquivotxt = criar_sistema()
-    arquivotxt = open('static\diretorios', 'w')
-    arquivotxt.write(f'{diretorio}')
-    arquivotxt.close()
+    with open('static\diretorios', 'r') as local:
+        arquivotxt = local.readlines()
+    with open('static\diretorios', 'w') as local:
+        for line in arquivotxt:
+            if arquivotxt.index(line) == 0:
+                local.write(f'Diretorio: {diretorio}\n')
+            else:
+                local.write(line)
 
 
 def variavel_diretorio():
+    destino = criar_sistema()
     destino = open('static\diretorios', 'r')
     diretorio = destino.readline()
-    return diretorio[11:]
+    return diretorio[11:-1]
 
-def variavel_loginSenha():
+
+def escolher_loginSAP(usuario, senha, acesso):
+    with open('static\diretorios', 'r') as local:
+        arquivotxt = local.readlines()
+    with open('static\diretorios', 'w') as local:
+        for line in arquivotxt:
+            if arquivotxt.index(line) == 0:
+                local.write(line)
+            if arquivotxt.index(line) == 1:
+                local.write(f'Login: {usuario}\n')
+            if arquivotxt.index(line) == 2:
+                local.write(f'Senha: {senha}\n')
+            if arquivotxt.index(line) == 3:
+                local.write(f'AcessoSAP: {acesso}\n')
+            
+
+def variavel_loginSAP():
     destino = open('static\diretorios', 'r')
     for cont, lines in enumerate(destino.readlines()):
         if cont == 1:
             usuario = lines[7:-1]
         if cont == 2:
-            senha = lines[7:]
-    return usuario,senha
+            senha = lines[7:-1]
+        if cont == 3:
+            acessosap = lines[11:-1]
+    return usuario, senha, acessosap
