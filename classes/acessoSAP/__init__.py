@@ -21,7 +21,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
 
             self.SapGuiAuto = win32.GetObject('SAPGUI')
             aplicativo = self.SapGuiAuto.GetScriptingEngine     
-            self.connection = aplicativo.OpenConnection(acess_name, True) # Informe o nome de acesso ao SAP
+            self.connection = aplicativo.OpenConnection(self.acess_name, True) # Informe o nome de acesso ao SAP
             time.sleep(3)
 
             self.session = self.connection.Children(0)
