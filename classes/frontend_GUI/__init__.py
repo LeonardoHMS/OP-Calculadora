@@ -100,5 +100,5 @@ class LoginSAP():
 
 
 if __name__ == '__main__':
-    painel = program_painel()
+    painel = ProgramPainel()
     painel.start_program()
