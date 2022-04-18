@@ -5,7 +5,7 @@ import webbrowser
 from classes import acessoSAP
 
 # Classe principal da criação do programa
-class program_painel:
+class ProgramPainel:
     def __init__(self):
         font_str = 'Arial, 12'
         size_Input = (8,1)
