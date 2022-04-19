@@ -11,8 +11,8 @@ class SapGui(object): # Classe para abrir o sistema SAP
         # Abrir o SAP
         try:
             self.SapGuiAuto = win32.GetObject('SAPGUI')
-            aplicativo = self.SapGuiAuto.GetScriptingEngine
-            self.session = self.connection.Children(0)
+            self.aplicativo = self.SapGuiAuto.GetScriptingEngine
+            self.session = self.aplicativo.Children(0).Children(0)
         
         except:
             self.path = r'C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe'
@@ -22,9 +22,9 @@ class SapGui(object): # Classe para abrir o sistema SAP
             self.SapGuiAuto = win32.GetObject('SAPGUI')
             aplicativo = self.SapGuiAuto.GetScriptingEngine     
             self.connection = aplicativo.OpenConnection(self.acess_name, True) # Informe o nome de acesso ao SAP
+            self.session = self.connection.Children(0)
             time.sleep(3)
 
-            self.session = self.connection.Children(0)
             self.session.findById('wnd[0]').maximize
             self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = self.users # Informe seu usuário de login
             self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = self.password # Informe sua senha de login
@@ -38,6 +38,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[0]").sendVKey(0)
         self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao # Transação que deseja abrir
         self.session.findById("wnd[0]").sendVKey(0)
+        time.sleep(3)
 
 
     def SapCooisXlsx(self): 

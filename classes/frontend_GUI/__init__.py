@@ -27,7 +27,6 @@ class ProgramPainel:
     def start_program(self):
         while True:
             # Extrair os dados na tela
-            # Cada event é um botão no programa, com um popup de ajuda
             try:
                 event, self.values = self.window.Read()
                 if event == sg.WIN_CLOSED or event == 'Sair':
@@ -69,11 +68,9 @@ class ProgramPainel:
                 if event == 'Confirmar':
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
                     self.values['operadores'], self.values['parada'].strip())) # Função para calcular o horário
-                    # Irá exibir os resultados no Output
                     if resultados != False:
                         print(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
                         print(f'Tempo de Mão humana: {resultados[1]:.0f} Minutos.')
-                    # Caso as informações não estejam claramente informadas, será informado um erro ao usuário
                     else:
                         print(f'ERRO, Verifique as informações!')
             # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
@@ -83,12 +80,12 @@ class ProgramPainel:
 
 class LoginSAP():
     def __init__(self):
-        size_Input = (8,1)
+        size_Input = (14,1)
         sg.change_look_and_feel('DarkGrey4')
         layout = [
             [sg.Text('Login '), sg.Input(key='login', size=size_Input)],
             [sg.Text('Senha'), sg.Input(key='senha', size=size_Input, password_char='*')],
-            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=(15,1))],
+            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=size_Input)],
             [sg.Button('Confirmar')]
         ]
         self.window = sg.Window('Login do SAP', icon=r'static/papaleguas.ico').layout(layout)
