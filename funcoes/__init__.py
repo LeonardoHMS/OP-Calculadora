@@ -27,7 +27,7 @@ def calcular_horario(inicio, fim, operadores, parada):
         inicio = timedelta(hours= int(inicio[:2]), minutes= int(inicio[2:]), seconds= 00)
         fim = timedelta(hours= int(fim[:2]), minutes= int(fim[2:]), seconds= 00)
         resultado = (fim - inicio).seconds
-        if inicio < inicio_almoco and fim > fim_almoco:
+        if inicio <= inicio_almoco and fim >= fim_almoco:
             return ((resultado / 60 - 90) - int(parada), (resultado / 60 - 90) * int(operadores) - (int(parada) * int(operadores)))
         else:
             return ((resultado / 60) - int(parada), (resultado / 60) * int(operadores) - (int(parada) * int(operadores)))
