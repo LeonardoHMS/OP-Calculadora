@@ -43,11 +43,11 @@ class ProgramPainel:
                     print('Planilha concluída')
                 # Escolha o destino para salvar as planilhas
                 if event == 'Definições':
-                    destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/papaleguas.ico', default_path=funcoes.variavel_diretorio())
+                    destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/papaleguas.ico', default_path=funcoes.getDiretorio())
                     if type(destino) != NoneType and len(destino) != 0:
-                        funcoes.escolher_diretorio(destino)
+                        funcoes.setDiretorio(destino)
                 if event == 'SAP - Cabeçalho':
-                    usuario, senha, acessosap = funcoes.variavel_loginSAP()
+                    usuario, senha, acessosap = funcoes.getLoginSAP()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.SapCooisXlsx()
@@ -80,18 +80,19 @@ class ProgramPainel:
 
 class LoginSAP():
     def __init__(self):
+        _, _, acesso = funcoes.getLoginSAP()
         size_Input = (14,1)
         sg.change_look_and_feel('DarkGrey4')
         layout = [
             [sg.Text('Login '), sg.Input(key='login', size=size_Input)],
             [sg.Text('Senha'), sg.Input(key='senha', size=size_Input, password_char='*')],
-            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=size_Input)],
+            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=size_Input, default_text=acesso)],
             [sg.Button('Confirmar')]
         ]
         self.window = sg.Window('Login do SAP', icon=r'static/papaleguas.ico').layout(layout)
         event, self.values = self.window.Read()
         if event == 'Confirmar':
-            funcoes.escolher_loginSAP(self.values['login'], self.values['senha'], self.values['acessosap'])
+            funcoes.setLoginSAP(self.values['login'], self.values['senha'], self.values['acessosap'])
             print('Dados Fornecidos!!')
             self.window.close()
 

@@ -46,7 +46,7 @@ def text_popup():
 
 # Funções para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho):
-    destino = variavel_diretorio()
+    destino = getDiretorio()
     planilha = pd.read_excel(f'{dir_cabecalho}')
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
@@ -56,7 +56,7 @@ def organizar_cabecalho(dir_cabecalho):
 
 
 def organizar_componentes(dir_componentes):
-    destino = variavel_diretorio()
+    destino = getDiretorio()
     planilha = pd.read_excel(f'{dir_componentes}')
     planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
     planilha['OBS'] = ''
@@ -75,7 +75,7 @@ def criar_sistema():
     return arquivotxt
 
 
-def escolher_diretorio(diretorio):
+def setDiretorio(diretorio):
     arquivotxt = criar_sistema()
     with open('static\diretorios', 'r') as local:
         arquivotxt = local.readlines()
@@ -87,29 +87,29 @@ def escolher_diretorio(diretorio):
                 local.write(line)
 
 
-def variavel_diretorio():
+def getDiretorio():
     destino = criar_sistema()
     destino = open('static\diretorios', 'r')
     diretorio = destino.readline()
     return diretorio[11:-1]
 
 
-def escolher_loginSAP(usuario, senha, acesso):
+def setLoginSAP(usuario, senha, acesso):
     with open('static\diretorios', 'r') as local:
         arquivotxt = local.readlines()
     with open('static\diretorios', 'w') as local:
         for line in arquivotxt:
-            if arquivotxt.index(line) == 0:
-                local.write(line)
             if arquivotxt.index(line) == 1:
                 local.write(f'Login: {usuario}\n')
-            if arquivotxt.index(line) == 2:
+            elif arquivotxt.index(line) == 2:
                 local.write(f'Senha: {senha}\n')
-            if arquivotxt.index(line) == 3:
+            elif arquivotxt.index(line) == 3:
                 local.write(f'AcessoSAP: {acesso}\n')
+            else:
+                local.write(line)
             
 
-def variavel_loginSAP():
+def getLoginSAP():
     destino = open('static\diretorios', 'r')
     for cont, lines in enumerate(destino.readlines()):
         if cont == 1:
