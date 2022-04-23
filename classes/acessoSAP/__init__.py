@@ -32,16 +32,19 @@ class SapGui(object): # Classe para abrir o sistema SAP
 
 
     def conexaoSap(self, transacao): # Entra na transação fornecida
-        self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
-        self.session.findById("wnd[0]").sendVKey(0)
-        self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
-        self.session.findById("wnd[0]").sendVKey(0)
-        self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao # Transação que deseja abrir
-        self.session.findById("wnd[0]").sendVKey(0)
-        time.sleep(3)
+        try:
+            self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
+            self.session.findById("wnd[0]").sendVKey(0)
+            self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
+            self.session.findById("wnd[0]").sendVKey(0)
+            self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao # Transação que deseja abrir
+            self.session.findById("wnd[0]").sendVKey(0)
+            time.sleep(3)
+        except:
+            print(f'Usuário não possui acesso à {transacao}')
 
 
-    def SapCooisXlsx(self): 
+    def SapCooisXlsx(self):
         # Function para gerar planilha, logo faço como classe filha !!!
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select
