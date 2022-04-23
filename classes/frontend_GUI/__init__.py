@@ -24,7 +24,7 @@ class ProgramPainel:
         # Janela
         self.window = sg.Window('OP Calculator v1.8', icon=r'static/papaleguas.ico').layout(layout)
     # Função da classe para a construção de todos os eventos de botões
-    def start_program(self):
+    def startProgram(self):
         while True:
             # Extrair os dados na tela
             try:
@@ -50,7 +50,8 @@ class ProgramPainel:
                     usuario, senha, acessosap = funcoes.getLoginSAP()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
-                    Sap_cab.SapCooisXlsx()
+                    salvar = funcoes.getDiretorio()
+                    Sap_cab.sapCooisXlsx(salvar)
                     arquivo = r'C://Users/racao01/Desktop/EXPORT.xlsx'
                     funcoes.organizar_cabecalho(arquivo)
                 if event == 'Definir login':
@@ -99,4 +100,4 @@ class LoginSAP():
 
 if __name__ == '__main__':
     painel = ProgramPainel()
-    painel.start_program()
+    painel.startProgram()

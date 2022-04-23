@@ -44,8 +44,9 @@ class SapGui(object): # Classe para abrir o sistema SAP
             print(f'Usuário não possui acesso à {transacao}')
 
 
-    def SapCooisXlsx(self):
+    def sapCooisXlsx(self, salvar):
         # Function para gerar planilha, logo faço como classe filha !!!
+        salvar = salvar.replace('/', '\ '.strip())
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "z04"
@@ -61,7 +62,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarContextButton("&MB_EXPORT")
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectContextMenuItem("&XXL")
         self.session.findById("wnd[1]").sendVKey(0)
-        self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = r"C:\Users\racao01\Desktop" # Local aonde irá salvar a planilha
+        self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar #Local aonde irá salvar a planilha
         self.session.findById("wnd[1]").sendVKey(0)
         time.sleep(4)
 
@@ -69,4 +70,4 @@ class SapGui(object): # Classe para abrir o sistema SAP
 if __name__ == '__main__':
     Sap_test = SapGui('usuario', 'senha', 'acesso')
     Sap_test.conexaoSap('COOIS')
-    Sap_test.SapCooisXlsx()
+    Sap_test.sapCooisXlsx()

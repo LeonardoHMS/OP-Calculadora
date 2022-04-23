@@ -9,4 +9,4 @@ from classes.frontend_GUI import ProgramPainel
 
 
 iniciar = ProgramPainel()
-iniciar.start_program()
+iniciar.startProgram()
