@@ -52,7 +52,7 @@ class ProgramPainel:
                     Sap_cab.conexaoSap('COOIS')
                     salvar = funcoes.getDiretorio()
                     Sap_cab.sapCooisXlsx(salvar)
-                    arquivo = r'C://Users/racao01/Desktop/EXPORT.xlsx'
+                    arquivo = f'{salvar}/EXPORT.xlsx'
                     funcoes.organizar_cabecalho(arquivo)
                 if event == 'Definir login':
                     LoginSAP()
