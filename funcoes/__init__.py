@@ -47,20 +47,47 @@ def text_popup():
 # Funções para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho):
     destino = getDiretorio()
-    planilha = pd.read_excel(f'{dir_cabecalho}')
+    planilha = pd.read_excel(dir_cabecalho)
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
     planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
-    planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index= False)
+    planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index=False)
+
+
+def organizar_tempos_prd(dir_operacoes):
+    destino = getDiretorio()
+    tempos_df = pd.read_excel(dir_operacoes)
+    tempos_df = tempos_df.drop(['Data início real de execução',
+                                'Hora início real de execução',
+                                'Data fim real da execução',
+                                'Hora fim real da execução',
+                                'Grupo','Tipo de roteiro',
+                                'Duração processamen. (BEAZE)'], axis=1)
+
+    tempos_df['HM'] = (tempos_df['Valor standard 2 (VGE02)'] / tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
+    tempos_df['Dif HM'] = tempos_df['Confirmação atividade 2 (ILE02)'] - tempos_df['HM']
+    tempos_df['% de Dif HM'] = tempos_df['Dif HM'] / tempos_df['Confirmação atividade 2 (ILE02)']
+    tempos_df.loc[tempos_df['HM']==0, 'HM'] = str('')
+    tempos_df.loc[tempos_df['HM']=='', 'Dif HM'] = str('')
+    tempos_df.loc[tempos_df['HM']==0, '% de Dif HM'] = str('')
+
+    tempos_df['HH'] = (tempos_df['Valor standard 3 (VGE03)'] / tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
+    tempos_df['Dif HH'] = tempos_df['Atividade confirm.3 (ILE03)'] - tempos_df['HH']
+    tempos_df['% de Dif HH'] = tempos_df['Dif HH'] / tempos_df['Atividade confirm.3 (ILE03)']
+    tempos_df.loc[tempos_df['HH']==0, 'HH'] = str('')
+    tempos_df.loc[tempos_df['HH']=='', 'Dif HH'] = str('')
+    tempos_df.loc[tempos_df['HH']==0, '% de Dif HH'] = str('')
+
+    tempos_df.to_excel(f'{destino}/TemposOperacoesNew.xlsx', index=False)
 
 
 def organizar_componentes(dir_componentes):
     destino = getDiretorio()
-    planilha = pd.read_excel(f'{dir_componentes}')
+    planilha = pd.read_excel(dir_componentes)
     planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
     planilha['OBS'] = ''
-    planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index= False)
+    planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
 
 
 def criar_sistema():

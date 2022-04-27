@@ -13,7 +13,7 @@ class ProgramPainel:
         # Layout do programa
         layout = [# Menu da parte de cima do programa
             [sg.Menu([['Arquivos', ['Ajuda', 'Sair']],
-                ['Planilhas', ['Cabeçalho', 'Componentes', 'Definições']],
+                ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
                 ['Automático',['SAP - Cabeçalho', 'Definir login']]])],# Menu da parte de cima do programa
             [sg.Text('Inicio'), sg.Input(key = 'inicio', size= size_Input), sg.Text('Fim'),
             sg.Input(key= 'fim', size= size_Input,)],
@@ -31,21 +31,30 @@ class ProgramPainel:
                 event, self.values = self.window.Read()
                 if event == sg.WIN_CLOSED or event == 'Sair':
                     break
-                # Aqui será usada a função do DataScience para pegar os dados somente das produções que foram finalizadas com valor total
+                # DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/papaleguas.ico')
                     funcoes.organizar_cabecalho(arquivo)
                     print('Planilha concluída')
-                # Aqui será usada a função do DataScience para pegar os dados de consumo dos componentes
+
+                # DataScience para pegar os dados de consumo dos componentes
                 if event == 'Componentes':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/papaleguas.ico')
                     funcoes.organizar_componentes(arquivo)
                     print('Planilha concluída')
+
+                # DateScience para cálculo dos tempos de produção
+                if event == 'Tempo Operações':
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Tempo de operações', icon=r'static/papaleguas.ico')
+                    funcoes.organizar_tempos_prd(arquivo)
+                    print('Planilha concluída')
+
                 # Escolha o destino para salvar as planilhas
                 if event == 'Definições':
                     destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/papaleguas.ico', default_path=funcoes.getDiretorio())
                     if type(destino) != NoneType and len(destino) != 0:
                         funcoes.setDiretorio(destino)
+
                 if event == 'SAP - Cabeçalho':
                     usuario, senha, acessosap = funcoes.getLoginSAP()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
@@ -54,17 +63,22 @@ class ProgramPainel:
                     Sap_cab.sapCooisXlsx(salvar)
                     arquivo = f'{salvar}/EXPORT.xlsx'
                     funcoes.organizar_cabecalho(arquivo)
+
                 if event == 'Definir login':
                     LoginSAP()
+
                 # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                 if event == 'Limpar':
                     self.window.FindElement('__Output__').update('')
+
                 # Link do GitHub do criador do programa
                 if event == 'link':
                     webbrowser.open('https://github.com/LeonardoHMS')
+
                 # Popup de ajuda de como preencher os campos do programa
                 if event == 'Ajuda':
                     sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/papaleguas.ico')
+
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],

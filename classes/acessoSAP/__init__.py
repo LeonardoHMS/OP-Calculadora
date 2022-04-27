@@ -1,4 +1,8 @@
-# Classe para acesso ao SAP, em construção, ainda não testado !!!
+# -------------------------
+# Classe para acesso ao SAP
+# Abertura e Login automático do FrontEnd SAP
+# Leonardo Mantovani github.com/LeonardoHMS
+# -------------------------
 import win32com.client as win32
 import subprocess
 import time
@@ -41,14 +45,13 @@ class SapGui(object): # Classe para abrir o sistema SAP
             self.session.findById("wnd[0]").sendVKey(0)
             time.sleep(3)
         except:
-            print(f'Usuário não possui acesso à {transacao}')
+            print(f'Usuário não possui acesso para a transação {transacao}')
 
 
     def sapCooisXlsx(self, salvar):
-        # Function para gerar planilha, logo faço como classe filha !!!
-        salvar = salvar.replace('/', '\ '.strip())
-        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press
-        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select
+        # Function para gerar planilha
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
+        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "z04"
         self.session.findById("wnd[0]").sendVKey(8)
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/chkP_KZ_E1").Selected = True
@@ -56,7 +59,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST1").text = "ente"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST2").text = "ence"
         self.session.findById("wnd[0]").sendVKey(8)
-        time.sleep(10)
+        time.sleep(1)
 
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarContextButton("&MB_EXPORT")
@@ -64,10 +67,9 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[1]").sendVKey(0)
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar #Local aonde irá salvar a planilha
         self.session.findById("wnd[1]").sendVKey(0)
-        time.sleep(4)
 
 
 if __name__ == '__main__':
     Sap_test = SapGui('usuario', 'senha', 'acesso')
     Sap_test.conexaoSap('COOIS')
-    Sap_test.sapCooisXlsx()
+    Sap_test.sapCooisXlsx('C:/Users/Leonardo Mantovani/Desktop')
