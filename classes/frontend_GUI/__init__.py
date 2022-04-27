@@ -22,7 +22,7 @@ class ProgramPainel:
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
         # Janela
-        self.window = sg.Window('OP Calculator v1.8', icon=r'static/papaleguas.ico').layout(layout)
+        self.window = sg.Window('OP Calculator v2.01', icon=r'static/papaleguas.ico').layout(layout)
     # Função da classe para a construção de todos os eventos de botões
     def startProgram(self):
         while True:
