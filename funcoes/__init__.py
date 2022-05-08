@@ -1,5 +1,6 @@
 from datetime import timedelta
 import pandas as pd
+import json
 
 def calcular_horario(inicio, fim, operadores, parada):
     '''Função para capturar o horário fornecido pelo usuário;
@@ -90,59 +91,48 @@ def organizar_componentes(dir_componentes):
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
 
 
-def criar_sistema():
+def createDirectory():
     try:
-        sistema_arquivo = 'static\diretorios'
-        arquivotxt = open(sistema_arquivo, 'r+')
-        arquivotxt.close()
+        file_settings = r'static\Settings.json'
+        with open(file_settings) as file:
+            settings = json.load(file)
+        return settings
     except FileNotFoundError:
-        arquivotxt = open(sistema_arquivo, 'w+')
-        arquivotxt.writelines('Diretorio: \nLogin: \nSenha: \nAcessoSAP: ')
-        arquivotxt.close()
-    return arquivotxt
+        with open(file_settings, 'w') as file:
+            informacoes = {}
+            informacoes['Diretorio'] = 'Undefined'
+            informacoes['Login'] = 'Undefined'
+            informacoes['Senha'] = 'Undefined'
+            informacoes['AcessoSAP'] = 'Undefined'
+            json.dump(informacoes, file)
+            settings = json.load(file)
+        return settings
 
 
 def setDiretorio(diretorio):
-    arquivotxt = criar_sistema()
-    with open('static\diretorios', 'r') as local:
-        arquivotxt = local.readlines()
-    with open('static\diretorios', 'w') as local:
-        for line in arquivotxt:
-            if arquivotxt.index(line) == 0:
-                local.write(f'Diretorio: {diretorio}\n')
-            else:
-                local.write(line)
+    settings = createDirectory()
+    settings['Diretorio'] = diretorio
+    with open(r'static\Settings.json', 'w') as file:
+        json.dump(settings, file)
 
 
 def getDiretorio():
-    destino = criar_sistema()
-    destino = open('static\diretorios', 'r')
-    diretorio = destino.readline()
-    return diretorio[11:-1]
+    settings = createDirectory()
+    return settings['Diretorio']
 
 
 def setLoginSAP(usuario, senha, acesso):
-    with open('static\diretorios', 'r') as local:
-        arquivotxt = local.readlines()
-    with open('static\diretorios', 'w') as local:
-        for line in arquivotxt:
-            if arquivotxt.index(line) == 1:
-                local.write(f'Login: {usuario}\n')
-            elif arquivotxt.index(line) == 2:
-                local.write(f'Senha: {senha}\n')
-            elif arquivotxt.index(line) == 3:
-                local.write(f'AcessoSAP: {acesso}\n')
-            else:
-                local.write(line)
+    settings = createDirectory()
+    settings['Login'] = usuario
+    settings['Senha'] = senha
+    settings['AcessoSAP'] = acesso
+    with open(r'static\Settings.json', 'w') as file:
+        json.dump(settings, file)
             
 
 def getLoginSAP():
-    destino = open('static\diretorios', 'r')
-    for cont, lines in enumerate(destino.readlines()):
-        if cont == 1:
-            usuario = lines[7:-1]
-        if cont == 2:
-            senha = lines[7:-1]
-        if cont == 3:
-            acessosap = lines[11:-1]
-    return usuario, senha, acessosap
+    settings = createDirectory()
+    return [settings['Login'],
+            settings['Senha'], 
+            settings['AcessoSAP']
+        ]
