@@ -8,21 +8,31 @@ from classes import acessoSAP
 class ProgramPainel:
     def __init__(self):
         font_str = 'Arial, 12'
-        size_Input = (8,1)
+        size_Input = (6,1)
         sg.change_look_and_feel('DarkGrey4')
         # Layout do programa
         layout = [# Menu da parte de cima do programa
             [sg.Menu([['Arquivos', ['Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
                 ['Automático',['SAP - Cabeçalho', 'Definir login']]])],# Menu da parte de cima do programa
-            [sg.Text('Inicio'), sg.Input(key = 'inicio', size= size_Input), sg.Text('Fim'),
-            sg.Input(key= 'fim', size= size_Input,)],
-            [sg.Text('Oprs.'), sg.Input(key= 'operadores', size= size_Input), sg.Text('Parada'), sg.Input(key= 'parada', size= size_Input), sg.Image(r'static/papaleguas.png')],
-            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Text(f'{"By: Leonardo Mantovani":>35}',enable_events=True, key= 'link', text_color=('blue'), tooltip='acessar')],
+            [
+                sg.Text('Inicio'), 
+                sg.Input(key = 'inicio', size= size_Input), 
+                sg.Text('Fim'),
+                sg.Input(key= 'fim', size= size_Input,), 
+                sg.Text(f'{"":>12}'), sg.Image(r'static/githublogo.png', key= 'link', tooltip='acessar', enable_events=True)
+            ],
+            [
+                sg.Text('Oprs.'), 
+                sg.Input(key= 'operadores', size= size_Input), 
+                sg.Text('Parada'), 
+                sg.Input(key= 'parada', size= size_Input), 
+                sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')],
+            [sg.Button('Confirmar'), sg.Button('Limpar')],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
         # Janela
-        self.window = sg.Window('OP Calculator v2.01', icon=r'static/papaleguas.ico').layout(layout)
+        self.window = sg.Window('OP Calculator v2.01', icon=r'static/calculator.ico').layout(layout)
     # Função da classe para a construção de todos os eventos de botões
     def startProgram(self):
         while True:
@@ -33,25 +43,25 @@ class ProgramPainel:
                     break
                 # DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
-                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/papaleguas.ico')
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/calculator.ico')
                     funcoes.organizar_cabecalho(arquivo)
                     print('Planilha concluída')
 
                 # DataScience para pegar os dados de consumo dos componentes
                 if event == 'Componentes':
-                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/papaleguas.ico')
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/calculator.ico')
                     funcoes.organizar_componentes(arquivo)
                     print('Planilha concluída')
 
                 # DateScience para cálculo dos tempos de produção
                 if event == 'Tempo Operações':
-                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Tempo de operações', icon=r'static/papaleguas.ico')
+                    arquivo = sg.popup_get_file('Selecione o arquivo', 'Tempo de operações', icon=r'static/calculator.ico')
                     funcoes.organizar_tempos_prd(arquivo)
                     print('Planilha concluída')
 
                 # Escolha o destino para salvar as planilhas
                 if event == 'Definições':
-                    destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/papaleguas.ico', default_path=funcoes.getDiretorio())
+                    destino = sg.popup_get_folder('Salvar planilhas em', 'Local', icon=r'static/calculator.ico', default_path=funcoes.getDiretorio())
                     if type(destino) != NoneType and len(destino) != 0:
                         funcoes.setDiretorio(destino)
 
@@ -77,7 +87,7 @@ class ProgramPainel:
 
                 # Popup de ajuda de como preencher os campos do programa
                 if event == 'Ajuda':
-                    sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/papaleguas.ico')
+                    sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/calculator.ico')
 
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
@@ -104,7 +114,7 @@ class LoginSAP():
             [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=size_Input, default_text=acesso)],
             [sg.Button('Confirmar')]
         ]
-        self.window = sg.Window('Login do SAP', icon=r'static/papaleguas.ico').layout(layout)
+        self.window = sg.Window('Login do SAP', icon=r'static/calculator.ico').layout(layout)
         event, self.values = self.window.Read()
         if event == 'Confirmar':
             funcoes.setLoginSAP(self.values['login'], self.values['senha'], self.values['acessosap'])
