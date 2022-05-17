@@ -27,7 +27,8 @@ class ProgramPainel:
                 sg.Input(key= 'operadores', size= size_Input), 
                 sg.Text('Parada'), 
                 sg.Input(key= 'parada', size= size_Input), 
-                sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')],
+                sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
+            ],
             [sg.Button('Confirmar'), sg.Button('Limpar')],
             [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
         ]
