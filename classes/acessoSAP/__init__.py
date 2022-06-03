@@ -7,7 +7,17 @@ import win32com.client as win32
 import subprocess
 import time
 
-class SapGui(object): # Classe para abrir o sistema SAP
+class SapGui(object):
+    """
+        Cria um objeto que executa o Script do SAP GUI, desde o Login do usuário
+        Pode estar já logado ou não.
+        Atributos:
+            - users (str): Usuário do Login do SAP
+            - password (str): Senha do Login do SAP
+            - acess_name (str): Nome da conexão do acesso ao SAP
+        Metodos:
+            conexaoSAP: Entra na janela da transação fornecida para acessar
+    """
     def __init__(self, users, password, acess_name):
         self.users = users
         self.password = password
@@ -25,23 +35,29 @@ class SapGui(object): # Classe para abrir o sistema SAP
 
             self.SapGuiAuto = win32.GetObject('SAPGUI')
             aplicativo = self.SapGuiAuto.GetScriptingEngine     
-            self.connection = aplicativo.OpenConnection(self.acess_name, True) # Informe o nome de acesso ao SAP
+            self.connection = aplicativo.OpenConnection(self.acess_name, True)
             self.session = self.connection.Children(0)
             time.sleep(3)
 
             self.session.findById('wnd[0]').maximize
-            self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = self.users # Informe seu usuário de login
-            self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = self.password # Informe sua senha de login
+            self.session.findById("wnd[0]/usr/txtRSYST-BNAME").text = self.users
+            self.session.findById("wnd[0]/usr/pwdRSYST-BCODE").text = self.password
             self.session.findById("wnd[0]").sendVKey(0)
 
 
-    def conexaoSap(self, transacao): # Entra na transação fornecida
+    def conexaoSap(self, transacao):
+        '''
+            Faz um acesso a transação fornecida pelo usuário
+            Exibe uma mensagem de erro caso o Usuário não tenha permissão da transação
+            Atributos:
+                - transacao (str): Nome da transação do SAP 
+        '''
         try:
             self.session.findById("wnd[0]/tbar[0]/okcd").text = "/o"
             self.session.findById("wnd[0]").sendVKey(0)
             self.session.findById("wnd[0]/tbar[0]/okcd").text = "/n"
             self.session.findById("wnd[0]").sendVKey(0)
-            self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao # Transação que deseja abrir
+            self.session.findById("wnd[0]/tbar[0]/okcd").text = transacao
             self.session.findById("wnd[0]").sendVKey(0)
             time.sleep(3)
         except:
@@ -49,7 +65,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
 
 
     def sapCooisXlsx(self, salvar):
-        # Function para gerar planilha
+        # Método para gerar planilha
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "z04"
@@ -65,7 +81,7 @@ class SapGui(object): # Classe para abrir o sistema SAP
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarContextButton("&MB_EXPORT")
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectContextMenuItem("&XXL")
         self.session.findById("wnd[1]").sendVKey(0)
-        self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar #Local aonde irá salvar a planilha
+        self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar
         self.session.findById("wnd[1]").sendVKey(0)
 
 
