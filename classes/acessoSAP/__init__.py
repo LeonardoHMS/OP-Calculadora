@@ -88,4 +88,4 @@ class SapGui(object):
 if __name__ == '__main__':
     Sap_test = SapGui('usuario', 'senha', 'acesso')
     Sap_test.conexaoSap('COOIS')
-    Sap_test.sapCooisXlsx('C:/Users/Leonardo Mantovani/Desktop')
+    Sap_test.sapCooisXlsx('C:/Users/')
