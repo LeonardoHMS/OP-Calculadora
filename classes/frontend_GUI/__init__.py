@@ -7,58 +7,61 @@ from classes import acessoSAP
 # Classe principal da criação do programa
 class ProgramPainel:
     def __init__(self):
-        font_str = 'Arial, 12'
-        size_Input = (6,1)
+        _font_str = 'Arial, 12'
+        _size_Input = (6,1)
         sg.change_look_and_feel('DarkGrey4')
         # Layout do programa
-        layout = [# Menu da parte de cima do programa
-            [sg.Menu([['Arquivos', ['Ajuda', 'Sair']],
+        _layout = [
+            [sg.Menu([['Arquivos', ['Refugos', 'Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
-                ['Automático',['SAP - Cabeçalho', 'Definir login']]])],# Menu da parte de cima do programa
+                ['Automático',['SAP - Cabeçalho', 'Definir login']]])
+            ],
             [
                 sg.Text('Inicio'), 
-                sg.Input(key = 'inicio', size= size_Input), 
+                sg.Input(key = 'inicio', size= _size_Input), 
                 sg.Text('Fim'),
-                sg.Input(key= 'fim', size= size_Input,), 
+                sg.Input(key= 'fim', size= _size_Input,), 
                 sg.Text(f'{"":>12}'), sg.Image(r'static/githublogo.png', key= 'link', tooltip='acessar', enable_events=True)
             ],
             [
                 sg.Text('Oprs.'), 
-                sg.Input(key= 'operadores', size= size_Input), 
+                sg.Input(key= 'operadores', size= _size_Input), 
                 sg.Text('Parada'), 
-                sg.Input(key= 'parada', size= size_Input), 
+                sg.Input(key= 'parada', size= _size_Input), 
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
             [sg.Button('Confirmar'), sg.Button('Limpar')],
-            [sg.Output(size= (35, 15), key='__Output__', font= font_str)]
+            [sg.Multiline(size= (35, 15), key='__Output__', font= _font_str, disabled=True)]
         ]
         # Janela
-        self.window = sg.Window('OP Calculator v2.01', icon=r'static/calculator.ico').layout(layout)
+        self.window = sg.Window('OP Calculator v2.01', icon=r'static/calculator.ico').layout(_layout)
+        sg.cprint_set_output_destination(multiline_key='__Output__', window=self.window)
     # Função da classe para a construção de todos os eventos de botões
-    def startProgram(self):
+    def run(self):
         while True:
             # Extrair os dados na tela
             try:
                 event, self.values = self.window.Read()
                 if event == sg.WIN_CLOSED or event == 'Sair':
+                    self.window.close()
                     break
                 # DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/calculator.ico')
                     funcoes.organizar_cabecalho(arquivo)
-                    print('Planilha concluída')
+                    sg.cprint('Planilha concluída')
 
                 # DataScience para pegar os dados de consumo dos componentes
                 if event == 'Componentes':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Componentes', icon=r'static/calculator.ico')
                     funcoes.organizar_componentes(arquivo)
-                    print('Planilha concluída')
+                    sg.cprint('Planilha concluída')
 
                 # DateScience para cálculo dos tempos de produção
                 if event == 'Tempo Operações':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Tempo de operações', icon=r'static/calculator.ico')
                     funcoes.organizar_tempos_prd(arquivo)
-                    print('Planilha concluída')
+                    sg.cprint('Planilha concluída')
 
                 # Escolha o destino para salvar as planilhas
                 if event == 'Definições':
@@ -76,16 +79,18 @@ class ProgramPainel:
                     funcoes.organizar_cabecalho(arquivo)
 
                 if event == 'Definir login':
-                    LoginSAP()
+                    LoginSAP().RunApp()
 
                 # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                 if event == 'Limpar':
-                    self.window.FindElement('__Output__').update('')
+                    self.window.find_element('__Output__').update('')
 
                 # Link do GitHub do criador do programa
                 if event == 'link':
                     webbrowser.open('https://github.com/LeonardoHMS')
 
+                if event == 'Refugos':
+                    CalculoRefugo().RunApp()
                 # Popup de ajuda de como preencher os campos do programa
                 if event == 'Ajuda':
                     sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/calculator.ico')
@@ -95,34 +100,70 @@ class ProgramPainel:
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
                     self.values['operadores'], self.values['parada'].strip())) # Função para calcular o horário
                     if resultados != False:
-                        print(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
-                        print(f'Tempo de Mão humana: {resultados[1]:.0f} Minutos.')
+                        sg.cprint(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
+                        sg.cprint(f'Tempo de Mão humana: {resultados[1]:.0f} Minutos.')
                     else:
-                        print(f'ERRO, Verifique as informações!')
+                        sg.cprint(f'ERRO, Verifique as informações!')
             # Caso de um erro em algum dos campos de dados, uma mensagem será mostrada para o usuário de possiveis erros
             except:
-                print('ERRO, verifique as informações fornecidas!')
+                sg.cprint('Erro, verifique as informações fornecidas!')
 
 
 class LoginSAP():
     def __init__(self):
-        _, _, acesso = funcoes.getLoginSAP()
-        size_Input = (14,1)
+        _, _, _acesso = funcoes.getLoginSAP()
+        _size_Input = (14,1)
         sg.change_look_and_feel('DarkGrey4')
-        layout = [
-            [sg.Text('Login '), sg.Input(key='login', size=size_Input)],
-            [sg.Text('Senha'), sg.Input(key='senha', size=size_Input, password_char='*')],
-            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=size_Input, default_text=acesso)],
+        _layout = [
+            [sg.Text('Login'), sg.Input(key='login', size=_size_Input)],
+            [sg.Text('Senha'), sg.Input(key='senha', size=_size_Input, password_char='*')],
+            [sg.Text('acesso SAP'), sg.Input(key='acessosap', size=_size_Input, default_text=_acesso)],
             [sg.Button('Confirmar')]
         ]
-        self.window = sg.Window('Login do SAP', icon=r'static/calculator.ico').layout(layout)
+        self.window = sg.Window('Login do SAP', icon=r'static/calculator.ico').layout(_layout)
+
+    def RunApp(self):
         event, self.values = self.window.Read()
+        if event == sg.WIN_CLOSED:
+            self.window.close()
         if event == 'Confirmar':
             funcoes.setLoginSAP(self.values['login'], self.values['senha'], self.values['acessosap'])
-            print('Dados Fornecidos!!')
+            sg.cprint('Dados Fornecidos!!')
             self.window.close()
 
 
+class CalculoRefugo():
+
+    @staticmethod
+    def resultadoRefugos(Trefugos, PesoT, total):
+            resultado = float(Trefugos) * float(PesoT) / float(total)
+            return resultado
+            
+    def __init__(self):
+        self._size_Input = (7,1)
+        sg.change_look_and_feel('DarkGrey4')
+        _layout = [
+            [sg.Text('Total   '), sg.Input(key='total', size=self._size_Input), sg.Text('Peso        '), sg.Input(key='PesoT', size=self._size_Input)],
+            [sg.Text('Refugo'), sg.Input(key='Trefugos', size=self._size_Input), sg.Text('Resultado'), sg.Text(key='Prefugos')],
+            [sg.Button('Confirmar'), sg.Text('Total Gasto'), sg.Text(key='peso_total')]
+        ]
+        self.window = sg.Window('Calculo de Refugos', icon=r'static/calculator.ico').layout(_layout)
+
+    def RunApp(self):
+        while True:
+            event, self.values = self.window.Read()
+            if event == sg.WIN_CLOSED:
+                break
+            if event == 'Confirmar':
+                try:
+                    resultado = CalculoRefugo.resultadoRefugos(self.values['Trefugos'], self.values['PesoT'], self.values['total'])
+                    peso_total = float(self.values['PesoT']) + resultado
+                    self.window['peso_total'].update(f'{peso_total:.2f}')
+                    self.window['Prefugos'].update(f'{resultado:.2f}')
+                except:
+                    sg.cprint('Preencha corretamente as informações')
+
+
 if __name__ == '__main__':
-    painel = ProgramPainel()
-    painel.startProgram()
+    calculo = CalculoRefugo()
+    calculo.RunApp()

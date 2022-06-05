@@ -12,7 +12,7 @@ import funcoes
 try:
     funcoes.createDirectory()
 except:
-    funcoes.createDirectory()
+    pass
 
 iniciar = ProgramPainel()
-iniciar.startProgram()
+iniciar.run()
