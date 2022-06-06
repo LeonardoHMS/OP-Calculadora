@@ -1,6 +1,8 @@
 from datetime import timedelta
 import pandas as pd
 import json
+import pyperclip
+
 
 def calcular_horario(inicio, fim, operadores, parada):
     '''Função para capturar o horário fornecido pelo usuário;
@@ -46,7 +48,7 @@ def text_popup():
     return texto
 
 # Funções para Data Science para analisar somente as produções que foram finalizadas
-def organizar_cabecalho(dir_cabecalho):
+def organizar_cabecalho(dir_cabecalho, copy=False):
     destino = getDiretorio()
     planilha = pd.read_excel(dir_cabecalho)
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
@@ -54,6 +56,12 @@ def organizar_cabecalho(dir_cabecalho):
     planilha = planilha.drop(remove_line)
     planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
     planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index=False)
+    if copy:
+        ordens = ''
+        for ordem in planilha['Ordem']:
+            ordens += f'{str(ordem)},'
+            ordens = ordens.replace(',', '\n')
+        pyperclip.copy(ordens)
 
 
 def organizar_tempos_prd(dir_operacoes):

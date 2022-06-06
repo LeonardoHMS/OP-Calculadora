@@ -17,6 +17,14 @@ class SapGui(object):
             - acess_name (str): Nome da conexão do acesso ao SAP
         Metodos:
             conexaoSAP: Entra na janela da transação fornecida para acessar
+            - sapGetCabecalho: A partir da transação 'COOIS' irá pegar o Cabeçalho de ordens
+                 utilizando alguns filtros de pesquisa
+            - sapGetComponentes: A partir da transação 'COOIS irá pegar os Componentes de ordens
+                 utilizando alguns filtros de pesquisa
+            - gerarPlanilha: Exporta uma planilha da transação 'COOIS'
+                atributos:
+                    - salvar (str): Diretório para salvar a planilha
+            
     """
     def __init__(self, users, password, acess_name):
         self.users = users
@@ -66,7 +74,6 @@ class SapGui(object):
         """
             Irá fornecer as ordens de produção na aba de Cabeçalho de ordens a partir da transação 'COOIS'
         """
-        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "z04"
@@ -76,10 +83,12 @@ class SapGui(object):
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST1").text = "ente"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST2").text = "ence"
         self.session.findById("wnd[0]").sendVKey(8)
+        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
 
     def sapGetComponentes(self):
         """
             Irá fornecer as ordens de produção na aba Componentes a partir da transação 'COOIS'
+            É necessário que o número das Ordens de produção estejam armazenadas na opção colar 'CTRL+V'
         """
         self.session.findById("wnd[0]/usr/ssub%_SUBSCREEN_TOPBLOCK:PPIO_ENTRY:1100/cmbPPIO_ENTRY_SC1100-PPIO_LISTTYP").key = "PPIOM000"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_AUFNR_%_APP_%-VALU_PUSH").press()
@@ -107,10 +116,3 @@ class SapGui(object):
         self.session.findById("wnd[1]").sendVKey(0)
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar
         self.session.findById("wnd[1]").sendVKey(0)
-
-
-if __name__ == '__main__':
-    Sap_test = SapGui('usuario', 'senha', 'acesso')
-    Sap_test.conexaoSap('COOIS')
-    Sap_test.sapGetCabecalho()
-    Sap_test.gerarPlanilha('C:/Users/')

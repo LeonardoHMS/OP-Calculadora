@@ -71,22 +71,25 @@ class ProgramPainel:
 
                 if event == 'SAP - ENTE':
                     usuario, senha, acessosap = funcoes.getLoginSAP()
+                    salvar = funcoes.getDiretorio()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
-                    salvar = funcoes.getDiretorio()
                     Sap_cab.sapGetCabecalho()
                     Sap_cab.gerarPlanilha(salvar)
                     arquivo = f'{salvar}/EXPORT.xlsx'
-                    funcoes.organizar_cabecalho(arquivo)
+                    funcoes.organizar_cabecalho(arquivo, copy=True)
+                    Sap_cab.conexaoSap('COOIS')
+                    Sap_cab.sapGetComponentes()
+                    Sap_cab.gerarPlanilha(r'C:\Users') # Ajustar no Script SAP o nome do EXPORT.xlsx
+                    funcoes.organizar_componentes('C:/Users/EXPORT.xlsx')
 
                 if event == 'Definir login':
                     LoginSAP().RunApp()
 
-                # Irá limpar o campo do Output aonde as informações são printadas, necessita o uso de melhor forma para o Output ainda !!
                 if event == 'Limpar':
                     self.window.find_element('__Output__').update('')
 
-                # Link do GitHub do criador do programa
+                # Link do GitHub
                 if event == 'link':
                     webbrowser.open('https://github.com/LeonardoHMS')
 
@@ -95,7 +98,6 @@ class ProgramPainel:
                 # Popup de ajuda de como preencher os campos do programa
                 if event == 'Ajuda':
                     sg.popup(funcoes.text_popup(), title= 'Ajuda', icon=r'static/calculator.ico')
-
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
@@ -168,8 +170,8 @@ class CalculoRefugo():
                     resultado = CalculoRefugo.resultadoRefugos(self.values['Trefugos'], self.values['PesoT'], self.values['total'])
                     self.values['PesoT'] = CalculoRefugo.replacePoint(self.values['PesoT'])
                     peso_total = self.values['PesoT'] + resultado
-                    self.window['peso_total'].update(f'{peso_total:.3f}')
-                    self.window['Prefugos'].update(f'{resultado:.3f}')
+                    self.window['peso_total'].update(str(f'{peso_total:.3f}').replace('.', ','))
+                    self.window['Prefugos'].update(str(f'{resultado:.3f}').replace('.', ','))
                 except:
                     sg.cprint('Preencha corretamente as informações')
 
