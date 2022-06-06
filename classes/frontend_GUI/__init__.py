@@ -14,7 +14,7 @@ class ProgramPainel:
         _layout = [
             [sg.Menu([['Arquivos', ['Refugos', 'Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
-                ['Automático',['SAP - Cabeçalho', 'Definir login']]])
+                ['Automático',['SAP - ENTE', 'Definir login']]])
             ],
             [
                 sg.Text('Inicio'), 
@@ -69,12 +69,13 @@ class ProgramPainel:
                     if type(destino) != NoneType and len(destino) != 0:
                         funcoes.setDiretorio(destino)
 
-                if event == 'SAP - Cabeçalho':
+                if event == 'SAP - ENTE':
                     usuario, senha, acessosap = funcoes.getLoginSAP()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
                     salvar = funcoes.getDiretorio()
-                    Sap_cab.sapCooisXlsx(salvar)
+                    Sap_cab.sapGetCabecalho()
+                    Sap_cab.gerarPlanilha(salvar)
                     arquivo = f'{salvar}/EXPORT.xlsx'
                     funcoes.organizar_cabecalho(arquivo)
 
@@ -135,10 +136,18 @@ class LoginSAP():
 class CalculoRefugo():
 
     @staticmethod
+    def replacePoint(valor):
+        valor = valor.replace(',', '.')
+        return float(valor)
+
+    @staticmethod
     def resultadoRefugos(Trefugos, PesoT, total):
-            resultado = float(Trefugos) * float(PesoT) / float(total)
-            return resultado
-            
+        Trefugos = CalculoRefugo.replacePoint(Trefugos)
+        PesoT = CalculoRefugo.replacePoint(PesoT)
+        total = CalculoRefugo.replacePoint(total)
+        resultado = Trefugos * PesoT / total
+        return resultado
+        
     def __init__(self):
         self._size_Input = (7,1)
         sg.change_look_and_feel('DarkGrey4')
@@ -157,9 +166,10 @@ class CalculoRefugo():
             if event == 'Confirmar':
                 try:
                     resultado = CalculoRefugo.resultadoRefugos(self.values['Trefugos'], self.values['PesoT'], self.values['total'])
-                    peso_total = float(self.values['PesoT']) + resultado
-                    self.window['peso_total'].update(f'{peso_total:.2f}')
-                    self.window['Prefugos'].update(f'{resultado:.2f}')
+                    self.values['PesoT'] = CalculoRefugo.replacePoint(self.values['PesoT'])
+                    peso_total = self.values['PesoT'] + resultado
+                    self.window['peso_total'].update(f'{peso_total:.3f}')
+                    self.window['Prefugos'].update(f'{resultado:.3f}')
                 except:
                     sg.cprint('Preencha corretamente as informações')
 
