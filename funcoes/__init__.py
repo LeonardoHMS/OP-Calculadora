@@ -92,8 +92,8 @@ def organizar_componentes(dir_componentes):
 
 
 def createDirectory():
+    file_settings = r'static\Settings.json'
     try:
-        file_settings = r'static\Settings.json'
         with open(file_settings) as file:
             settings = json.load(file)
         return settings
