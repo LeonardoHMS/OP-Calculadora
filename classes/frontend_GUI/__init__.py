@@ -75,13 +75,14 @@ class ProgramPainel:
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.sapGetCabecalho()
-                    Sap_cab.gerarPlanilha(salvar)
-                    arquivo = f'{salvar}/EXPORT.xlsx'
+                    Sap_cab.gerarPlanilha(salvar, 'CABECALHO.XLSX')
+                    arquivo = f'{salvar}/CABECALHO.xlsx'
                     funcoes.organizar_cabecalho(arquivo, copy=True)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.sapGetComponentes()
-                    Sap_cab.gerarPlanilha(r'C:\Users') # Ajustar no Script SAP o nome do EXPORT.xlsx
-                    funcoes.organizar_componentes('C:/Users/EXPORT.xlsx')
+                    Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
+                    arquivo = f'{salvar}/COMPONENTES.xlsx'
+                    funcoes.organizar_componentes(arquivo)
 
                 if event == 'Definir login':
                     LoginSAP().RunApp()

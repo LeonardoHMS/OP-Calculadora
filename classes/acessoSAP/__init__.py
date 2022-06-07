@@ -24,7 +24,6 @@ class SapGui(object):
             - gerarPlanilha: Exporta uma planilha da transação 'COOIS'
                 atributos:
                     - salvar (str): Diretório para salvar a planilha
-            
     """
     def __init__(self, users, password, acess_name):
         self.users = users
@@ -105,14 +104,16 @@ class SapGui(object):
         self.session.findById("wnd[2]").sendVKey(8)
         self.session.findById("wnd[1]").sendVKey(0)
 
-    def gerarPlanilha(self, salvar):
+    def gerarPlanilha(self, salvar, nome):
         """
             Exporta uma planilha da transação 'COOIS'
             Atributos:
                 - salvar (str): Local a onde será salva a planilha
+                - nome (str): Nome da planilha para salvar com a Extensão do arquivo
         """
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarContextButton("&MB_EXPORT")
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectContextMenuItem("&XXL")
         self.session.findById("wnd[1]").sendVKey(0)
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar
+        self.session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = nome
         self.session.findById("wnd[1]").sendVKey(0)
