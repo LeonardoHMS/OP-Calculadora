@@ -78,11 +78,11 @@ class ProgramPainel:
                     Sap_cab.gerarPlanilha(salvar, 'CABECALHO.XLSX')
                     arquivo = f'{salvar}/CABECALHO.xlsx'
                     funcoes.organizar_cabecalho(arquivo, copy=True)
-                    Sap_cab.conexaoSap('COOIS')
-                    Sap_cab.sapGetComponentes()
-                    Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
-                    arquivo = f'{salvar}/COMPONENTES.xlsx'
-                    funcoes.organizar_componentes(arquivo)
+                    # Sap_cab.conexaoSap('COOIS')
+                    # Sap_cab.sapGetComponentes()
+                    # Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
+                    # arquivo = f'{salvar}/COMPONENTES.xlsx'
+                    # funcoes.organizar_componentes(arquivo)
 
                 if event == 'Definir login':
                     LoginSAP().RunApp()
