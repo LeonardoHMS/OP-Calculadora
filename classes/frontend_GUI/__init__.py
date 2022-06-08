@@ -48,7 +48,7 @@ class ProgramPainel:
                 # DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/calculator.ico')
-                    funcoes.organizar_cabecalho(arquivo)
+                    funcoes.organizar_cabecalho(arquivo, copy=True)
                     sg.cprint('Planilha concluída')
 
                 # DataScience para pegar os dados de consumo dos componentes
@@ -78,11 +78,11 @@ class ProgramPainel:
                     Sap_cab.gerarPlanilha(salvar, 'CABECALHO.XLSX')
                     arquivo = f'{salvar}/CABECALHO.xlsx'
                     funcoes.organizar_cabecalho(arquivo, copy=True)
-                    # Sap_cab.conexaoSap('COOIS')
-                    # Sap_cab.sapGetComponentes()
-                    # Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
-                    # arquivo = f'{salvar}/COMPONENTES.xlsx'
-                    # funcoes.organizar_componentes(arquivo)
+                    Sap_cab.conexaoSap('COOIS')
+                    Sap_cab.sapGetComponentes()
+                    Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
+                    arquivo = f'{salvar}/COMPONENTES.xlsx'
+                    funcoes.organizar_componentes(arquivo)
 
                 if event == 'Definir login':
                     LoginSAP().RunApp()

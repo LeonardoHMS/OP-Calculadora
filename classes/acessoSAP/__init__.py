@@ -91,7 +91,9 @@ class SapGui(object):
         """
         self.session.findById("wnd[0]/usr/ssub%_SUBSCREEN_TOPBLOCK:PPIO_ENTRY:1100/cmbPPIO_ENTRY_SC1100-PPIO_LISTTYP").key = "PPIOM000"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_AUFNR_%_APP_%-VALU_PUSH").press()
+        time.sleep(3)
         self.session.findById("wnd[1]").sendVKey(24)
+        time.sleep(1.5)
         self.session.findById("wnd[1]").sendVKey(8)
         self.session.findById("wnd[0]").sendVKey(8)
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").setCurrentCell(-1, "DUMPS")

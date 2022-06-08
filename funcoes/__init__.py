@@ -57,10 +57,7 @@ def organizar_cabecalho(dir_cabecalho, copy=False):
     planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
     planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index=False)
     if copy:
-        ordens = ''
-        for ordem in planilha['Ordem']:
-            ordens += f'{str(ordem)},'
-            ordens = ordens.replace(',', '\n')
+        ordens = planilha['Ordem'].to_string(index=False)
         pyperclip.copy(ordens)
 
 
