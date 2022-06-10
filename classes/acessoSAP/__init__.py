@@ -1,6 +1,7 @@
 # -------------------------
 # Classe para acesso ao SAP
 # Abertura e Login automático do FrontEnd SAP
+# Integração com SAP GUI Scripting API
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
 import win32com.client as win32
@@ -72,6 +73,7 @@ class SapGui(object):
     def sapGetCabecalho(self):
         """
             Irá fornecer as ordens de produção na aba de Cabeçalho de ordens a partir da transação 'COOIS'
+            Padrões de filtros já pré definidos para uso específico
         """
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
@@ -84,16 +86,20 @@ class SapGui(object):
         self.session.findById("wnd[0]").sendVKey(8)
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
 
-    def sapGetComponentes(self):
+    def sapGetComponentes(self, salvar, txt_name):
         """
             Irá fornecer as ordens de produção na aba Componentes a partir da transação 'COOIS'
-            É necessário que o número das Ordens de produção estejam armazenadas na opção colar 'CTRL+V'
+            É necessário que o número das Ordens de produção estejam em um arquivo .txt e passar como parâmetro
+            Atributos:
+                - salvar (str): Local aonde está armazenado o arquivo txt com o número das Ordens de produção
+                - txt_name (str): Nome do arquivo txt com as Ordens de produção
         """
         self.session.findById("wnd[0]/usr/ssub%_SUBSCREEN_TOPBLOCK:PPIO_ENTRY:1100/cmbPPIO_ENTRY_SC1100-PPIO_LISTTYP").key = "PPIOM000"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_AUFNR_%_APP_%-VALU_PUSH").press()
-        time.sleep(3)
-        self.session.findById("wnd[1]").sendVKey(24)
-        time.sleep(1.5)
+        self.session.findById("wnd[1]/tbar[0]/btn[23]").press()
+        self.session.findById("wnd[2]/usr/ctxtDY_PATH").text = salvar
+        self.session.findById("wnd[2]/usr/ctxtDY_FILENAME").text = txt_name
+        self.session.findById("wnd[2]").sendVKey(0)
         self.session.findById("wnd[1]").sendVKey(8)
         self.session.findById("wnd[0]").sendVKey(8)
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").setCurrentCell(-1, "DUMPS")
@@ -109,6 +115,7 @@ class SapGui(object):
     def gerarPlanilha(self, salvar, nome):
         """
             Exporta uma planilha da transação 'COOIS'
+            É necessário já estar dentro da transação para fornecer essa planilha
             Atributos:
                 - salvar (str): Local a onde será salva a planilha
                 - nome (str): Nome da planilha para salvar com a Extensão do arquivo

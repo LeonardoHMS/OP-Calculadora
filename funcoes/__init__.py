@@ -48,7 +48,7 @@ def text_popup():
     return texto
 
 # Funções para Data Science para analisar somente as produções que foram finalizadas
-def organizar_cabecalho(dir_cabecalho, copy=False):
+def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
     destino = getDiretorio()
     planilha = pd.read_excel(dir_cabecalho)
     planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
@@ -59,6 +59,9 @@ def organizar_cabecalho(dir_cabecalho, copy=False):
     if copy:
         ordens = planilha['Ordem'].to_string(index=False)
         pyperclip.copy(ordens)
+    if text:
+        with open(f'{destino}\ordens.txt', 'w+') as txt:
+            txt.write(planilha['Ordem'].to_string(index=False))
 
 
 def organizar_tempos_prd(dir_operacoes):
@@ -133,7 +136,7 @@ def setLoginSAP(usuario, senha, acesso):
     settings['AcessoSAP'] = acesso
     with open(r'static\Settings.json', 'w') as file:
         json.dump(settings, file)
-            
+ 
 
 def getLoginSAP():
     settings = createDirectory()

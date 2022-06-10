@@ -77,9 +77,9 @@ class ProgramPainel:
                     Sap_cab.sapGetCabecalho()
                     Sap_cab.gerarPlanilha(salvar, 'CABECALHO.XLSX')
                     arquivo = f'{salvar}/CABECALHO.xlsx'
-                    funcoes.organizar_cabecalho(arquivo, copy=True)
+                    funcoes.organizar_cabecalho(arquivo, text=True)
                     Sap_cab.conexaoSap('COOIS')
-                    Sap_cab.sapGetComponentes()
+                    Sap_cab.sapGetComponentes(salvar, 'ordens.txt')
                     Sap_cab.gerarPlanilha(salvar, 'COMPONENTES.XLSX')
                     arquivo = f'{salvar}/COMPONENTES.xlsx'
                     funcoes.organizar_componentes(arquivo)
