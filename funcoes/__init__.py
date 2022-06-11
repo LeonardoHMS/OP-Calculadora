@@ -1,7 +1,7 @@
 from datetime import timedelta
 import pandas as pd
-import json
 import pyperclip
+import json
 
 
 def calcular_horario(inicio, fim, operadores, parada):
@@ -55,7 +55,6 @@ def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
     planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
-    planilha.to_excel(f'{destino}/CabecalhoNew.xlsx', index=False)
     if copy:
         ordens = planilha['Ordem'].to_string(index=False)
         pyperclip.copy(ordens)
@@ -95,6 +94,7 @@ def organizar_componentes(dir_componentes):
     destino = getDiretorio()
     planilha = pd.read_excel(dir_componentes)
     planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+    planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
     planilha['OBS'] = ''
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
 

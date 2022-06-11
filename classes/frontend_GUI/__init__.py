@@ -1,8 +1,8 @@
+from classes import acessoSAP
 from types import NoneType
 import PySimpleGUI as sg
-import funcoes
 import webbrowser
-from classes import acessoSAP
+import funcoes
 
 # Classe principal da criação do programa
 class ProgramPainel:
