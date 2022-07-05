@@ -76,16 +76,16 @@ def organizar_tempos_prd(dir_operacoes):
     tempos_df['HM'] = (tempos_df['Valor standard 2 (VGE02)'] / tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
     tempos_df['Dif HM'] = tempos_df['Confirmação atividade 2 (ILE02)'] - tempos_df['HM']
     tempos_df['% de Dif HM'] = tempos_df['Dif HM'] / tempos_df['Confirmação atividade 2 (ILE02)']
-    tempos_df.loc[tempos_df['HM']==0, 'HM'] = str('')
-    tempos_df.loc[tempos_df['HM']=='', 'Dif HM'] = str('')
-    tempos_df.loc[tempos_df['HM']==0, '% de Dif HM'] = str('')
+    tempos_df.loc[tempos_df['HM']==0, 'HM'] = str('---')
+    tempos_df.loc[tempos_df['HM']=='', 'Dif HM'] = str('---')
+    tempos_df.loc[tempos_df['HM']==0, '% de Dif HM'] = str('---')
 
     tempos_df['HH'] = (tempos_df['Valor standard 3 (VGE03)'] / tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
     tempos_df['Dif HH'] = tempos_df['Atividade confirm.3 (ILE03)'] - tempos_df['HH']
     tempos_df['% de Dif HH'] = tempos_df['Dif HH'] / tempos_df['Atividade confirm.3 (ILE03)']
-    tempos_df.loc[tempos_df['HH']==0, 'HH'] = str('')
-    tempos_df.loc[tempos_df['HH']=='', 'Dif HH'] = str('')
-    tempos_df.loc[tempos_df['HH']==0, '% de Dif HH'] = str('')
+    tempos_df.loc[tempos_df['HH']==0, 'HH'] = str('---')
+    tempos_df.loc[tempos_df['HH']=='', 'Dif HH'] = str('---')
+    tempos_df.loc[tempos_df['HH']==0, '% de Dif HH'] = str('---')
 
     tempos_df.to_excel(f'{destino}/TemposOperacoesNew.xlsx', index=False)
 
