@@ -1,4 +1,5 @@
 from classes import acessoSAP
+from datetime import datetime
 from types import NoneType
 import PySimpleGUI as sg
 import webbrowser
@@ -17,21 +18,29 @@ class ProgramPainel:
                 ['Automático',['SAP - ENTE', 'Definir login']]])
             ],
             [
-                sg.Text('Inicio'), 
-                sg.Input(key = 'inicio', size= _size_Input), 
+                sg.Text('Dia Início'),
+                sg.Input(key='d_inicio', size=(10,1), default_text=datetime.today().strftime('%d-%m-%Y')),
+                sg.CalendarButton('C', format='%d-%m-%Y', month_names=funcoes.MES, day_abbreviations=funcoes.ABV_DIAS),
+                sg.Text('Dia Fim'),
+                sg.Input(key='d_fim', size=(10,1), default_text=datetime.today().strftime('%d-%m-%Y')),
+                sg.CalendarButton('C', format='%d-%m-%Y', month_names=funcoes.MES, day_abbreviations=funcoes.ABV_DIAS)
+            ],
+            [
+                sg.Text('Início'), 
+                sg.Input(key = 'inicio', size=_size_Input), 
                 sg.Text('Fim'),
-                sg.Input(key= 'fim', size= _size_Input,), 
+                sg.Input(key= 'fim', size=_size_Input,), 
                 sg.Text(f'{"":>12}'), sg.Image(r'static/githublogo.png', key= 'link', tooltip='acessar', enable_events=True)
             ],
             [
                 sg.Text('Oprs.'), 
-                sg.Input(key= 'operadores', size= _size_Input), 
+                sg.Input(key= 'operadores', size=_size_Input), 
                 sg.Text('Parada'), 
-                sg.Input(key= 'parada', size= _size_Input), 
+                sg.Input(key= 'parada', size=_size_Input), 
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
-            [sg.Button('Confirmar'), sg.Button('Limpar')],
-            [sg.Multiline(size= (35, 15), key='__Output__', font= _font_str, disabled=True)]
+            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
+            [sg.Multiline(size= (35, 15), key='__Output__', font=_font_str, disabled=True)]
         ]
         # Janela
         self.window = sg.Window('OP Calculator v2.14', icon=r'static/calculator.ico').layout(_layout)
@@ -102,7 +111,7 @@ class ProgramPainel:
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
-                    self.values['operadores'], self.values['parada'].strip())) # Função para calcular o horário
+                    self.values['operadores'], self.values['parada'].strip(), self.values['d_inicio'], self.values['d_fim'])) # Função para calcular o horário
                     if resultados != False:
                         sg.cprint(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
                         sg.cprint(f'Tempo de Mão humana: {resultados[1]:.0f} Minutos.')

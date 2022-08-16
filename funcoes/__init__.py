@@ -1,34 +1,80 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 import pandas as pd
 import pyperclip
 import json
 
 
-def calcular_horario(inicio, fim, operadores, parada):
+ABV_DIAS = [
+    'Dom',
+    'Seg',
+    'Ter',
+    'Qua',
+    'Qui',
+    'Sex',
+    'Sab'
+]
+
+MES = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
+]
+
+def somente_numeros(numeros):
+    """ Função que deixa somentes números para formar um valor em timedelta
+    --> Se a quantidade de números for diferente de 4, retorna False
+        - numeros: Números usados para formar um horário
+    """
+    for item in numeros:
+        if item.isnumeric() == False:
+            numeros = numeros.replace(item, '')
+    if len(numeros) != 4:
+        return False
+    numeros = timedelta(hours= int(numeros[:2]), minutes= int(numeros[2:]), seconds= 00)
+    return numeros
+
+def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     '''Função para capturar o horário fornecido pelo usuário;
     --> Faz o calculo do tempo entre os dois horários com retorno em minutos
     - inicio: Horário inicial da produção
     - fim: Horário do término da produção
     - operadores: Quantidade de operadores para a produção
     - parada: Tempo de maquina parada sem produzir
+    - d_inicio: Dia inícial da produção
+    - d_fim: Dia final da produção
     '''
-    inicio_almoco = timedelta(hours=int(11), minutes=int(35), seconds=int(00))
-    fim_almoco = timedelta(hours=int(13), minutes=int(5), seconds=int(00))
+    d_inicio = d_inicio.split('-')
+    d_fim = d_fim.split('-')
+    inicio_almoco = timedelta(hours=int(11), minutes=int(35), seconds=00)
+    fim_almoco = timedelta(hours=int(13), minutes=int(5), seconds=00)
     if parada == '':
         parada = 0
     if operadores == '':
         operadores = 1
     try:
-        for item in inicio:
-            if item.isnumeric() == False:
-                inicio = inicio.replace(item, '')
-        for item in fim:
-            if item.isnumeric() == False:
-                fim = fim.replace(item, '')
-        if len(inicio) != 4 or len(fim) != 4:
-            return False
-        inicio = timedelta(hours= int(inicio[:2]), minutes= int(inicio[2:]), seconds= 00)
-        fim = timedelta(hours= int(fim[:2]), minutes= int(fim[2:]), seconds= 00)
+        inicio = somente_numeros(inicio)
+        d_inicio = datetime(
+            day=int(d_inicio[0]),
+            month=int(d_inicio[1]),
+            year=int(d_inicio[2]),
+        )
+        d_inicio += inicio
+        fim = somente_numeros(fim)
+        d_fim = datetime(
+            day=int(d_fim[0]),
+            month=int(d_fim[1]),
+            year=int(d_fim[2])
+        )
+        d_fim += fim
         resultado = (fim - inicio).seconds
         if inicio <= inicio_almoco and fim >= fim_almoco:
             return ((resultado / 60 - 90) - int(parada), (resultado / 60 - 90) * int(operadores) - (int(parada) * int(operadores)))
