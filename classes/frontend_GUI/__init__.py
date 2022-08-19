@@ -27,7 +27,7 @@ class ProgramPainel:
             ],
             [
                 sg.Text('Início'), 
-                sg.Input(key = 'inicio', size=_size_Input), 
+                sg.Input(key = 'inicio', size=_size_Input, focus=True), 
                 sg.Text('Fim'),
                 sg.Input(key= 'fim', size=_size_Input,), 
                 sg.Text(f'{"":>12}'), sg.Image(r'static/githublogo.png', key= 'link', tooltip='acessar', enable_events=True)
@@ -39,11 +39,11 @@ class ProgramPainel:
                 sg.Input(key= 'parada', size=_size_Input), 
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
-            [sg.Button('Confirmar'), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
+            [sg.Button('Confirmar', bind_return_key=True,), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
             [sg.Multiline(size= (35, 15), key='__Output__', font=_font_str, disabled=True)]
         ]
         # Janela
-        self.window = sg.Window('OP Calculator v2.14', icon=r'static/calculator.ico').layout(_layout)
+        self.window = sg.Window('OP Calculator v2.14', icon=r'static/calculator.ico', return_keyboard_events=True, use_default_focus=False).layout(_layout)
         sg.cprint_set_output_destination(multiline_key='__Output__', window=self.window)
     # Função da classe para a construção de todos os eventos de botões
     def run(self):
@@ -96,7 +96,7 @@ class ProgramPainel:
                 if event == 'Definir login':
                     LoginSAP().RunApp()
 
-                if event == 'Limpar':
+                if event == 'Limpar' or event == "Limpar" + "_Enter":
                     self.window.find_element('__Output__').update('')
 
                 # Link do GitHub

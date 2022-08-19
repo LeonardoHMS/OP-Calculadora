@@ -29,6 +29,16 @@ MES = [
     'Dezembro'
 ]
 
+DIAS = [
+    'Segunda-feira',
+    'Terça-Feira',
+    'Quarta-feira',
+    'Quinta-feira',
+    'Sexta-feira',
+    'Sábado',
+    'Domingo'
+]
+
 def somente_numeros(numeros):
     """ Função que deixa somentes números para formar um valor em timedelta
     --> Se a quantidade de números for diferente de 4, retorna False
@@ -54,8 +64,6 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     '''
     d_inicio = d_inicio.split('-')
     d_fim = d_fim.split('-')
-    inicio_almoco = timedelta(hours=int(11), minutes=int(35), seconds=00)
-    fim_almoco = timedelta(hours=int(13), minutes=int(5), seconds=00)
     if parada == '':
         parada = 0
     if operadores == '':
@@ -75,11 +83,22 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
             year=int(d_fim[2])
         )
         d_fim += fim
-        resultado = (fim - inicio).seconds
-        if inicio <= inicio_almoco and fim >= fim_almoco:
-            return ((resultado / 60 - 90) - int(parada), (resultado / 60 - 90) * int(operadores) - (int(parada) * int(operadores)))
-        else:
-            return ((resultado / 60) - int(parada), (resultado / 60) * int(operadores) - (int(parada) * int(operadores)))
+        resultado = 0
+        while d_inicio < d_fim:
+            indice_semana = d_inicio.weekday()
+            dia_semana = DIAS[indice_semana]
+            if d_inicio.hour == 11 and d_inicio.minute == 35:
+                d_inicio += timedelta(minutes=90)
+            elif d_inicio.hour == 17 and d_inicio.minute == 28:
+                d_inicio += timedelta(minutes=822)
+            else:
+                d_inicio += timedelta(minutes=1)
+                resultado += 1
+            if dia_semana == 'Sábado':
+                d_inicio += timedelta(days=2)
+            elif dia_semana == 'Domingo':
+                d_inicio += timedelta(days=1)
+        return (resultado - int(parada), resultado * int(operadores) - (int(parada) * int(operadores)))
     except:
         return False # Os retornos de falsos são para printar o erro no output do programa
 

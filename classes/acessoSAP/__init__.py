@@ -5,6 +5,7 @@
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
 import win32com.client as win32
+from time import sleep
 import subprocess
 import time
 
@@ -42,8 +43,13 @@ class SapGui(object):
             time.sleep(3)
 
             self.SapGuiAuto = win32.GetObject('SAPGUI')
-            aplicativo = self.SapGuiAuto.GetScriptingEngine     
-            self.connection = aplicativo.OpenConnection(self.acess_name, True)
+            aplicativo = self.SapGuiAuto.GetScriptingEngine
+            while True:
+                try:
+                    self.connection = aplicativo.OpenConnection(self.acess_name, True)
+                    break
+                except:
+                    sleep(2)
             self.session = self.connection.Children(0)
             time.sleep(3)
 
