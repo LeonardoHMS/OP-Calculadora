@@ -39,7 +39,7 @@ class ProgramPainel:
                 sg.Input(key= 'parada', size=_size_Input), 
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
-            [sg.Button('Confirmar', bind_return_key=True,), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
+            [sg.Button('Confirmar', bind_return_key=True), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
             [sg.Multiline(size= (35, 15), key='__Output__', font=_font_str, disabled=True)]
         ]
         # Janela
@@ -166,7 +166,7 @@ class CalculoRefugo():
         _layout = [
             [sg.Text('Total   '), sg.Input(key='total', size=self._size_Input), sg.Text('Peso        '), sg.Input(key='PesoT', size=self._size_Input)],
             [sg.Text('Refugo'), sg.Input(key='Trefugos', size=self._size_Input), sg.Text('Resultado'), sg.Text(key='Prefugos')],
-            [sg.Button('Confirmar'), sg.Text('Total Gasto'), sg.Text(key='peso_total')]
+            [sg.Button('Confirmar', bind_return_key=True), sg.Text('Total Gasto'), sg.Text(key='peso_total')]
         ]
         self.window = sg.Window('Calculo de Refugos', icon=r'static/calculator.ico').layout(_layout)
 

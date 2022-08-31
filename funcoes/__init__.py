@@ -62,8 +62,12 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     - d_inicio: Dia inícial da produção
     - d_fim: Dia final da produção
     '''
-    d_inicio = d_inicio.split('-')
-    d_fim = d_fim.split('-')
+    if '-' in d_inicio and d_fim:
+        d_inicio = d_inicio.split('-')
+        d_fim = d_fim.split('-')
+    else:
+        d_inicio = [d_inicio[:2], d_inicio[2:4], d_inicio[4:]]
+        d_fim = [d_fim[:2], d_fim[2:4], d_fim[4:]]
     if parada == '':
         parada = 0
     if operadores == '':
