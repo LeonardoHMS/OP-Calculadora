@@ -3,6 +3,7 @@ import pandas as pd
 import pyperclip
 import json
 
+current_year = datetime.now().strftime('%Y')
 
 ABV_DIAS = [
     'Dom',
@@ -66,8 +67,8 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
         d_inicio = d_inicio.split('-')
         d_fim = d_fim.split('-')
     else:
-        d_inicio = [d_inicio[:2], d_inicio[2:4], d_inicio[4:]]
-        d_fim = [d_fim[:2], d_fim[2:4], d_fim[4:]]
+        d_inicio = [d_inicio[:2], d_inicio[2:4], current_year]
+        d_fim = [d_fim[:2], d_fim[2:4], current_year]
     if parada == '':
         parada = 0
     if operadores == '':

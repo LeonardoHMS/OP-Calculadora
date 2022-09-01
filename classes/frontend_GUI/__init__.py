@@ -40,7 +40,7 @@ class ProgramPainel:
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
             [sg.Button('Confirmar', bind_return_key=True), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
-            [sg.Multiline(size= (35, 15), key='__Output__', font=_font_str, disabled=True)]
+            [sg.Multiline(size=(35, 15), key='__Output__', font=_font_str, do_not_clear=False, disabled=True)]
         ]
         # Janela
         self.window = sg.Window('OP Calculator v2.14', icon=r'static/calculator.ico', return_keyboard_events=True, use_default_focus=False).layout(_layout)
@@ -49,11 +49,11 @@ class ProgramPainel:
     def run(self):
         while True:
             # Extrair os dados na tela
+            event, self.values = self.window.Read()
+            if event == sg.WIN_CLOSED or event == 'Sair':
+                self.window.close()
+                break
             try:
-                event, self.values = self.window.Read()
-                if event == sg.WIN_CLOSED or event == 'Sair':
-                    self.window.close()
-                    break
                 # DataScience para pegar os dados somente das produções que foram finalizadas com valor total
                 if event == 'Cabeçalho':
                     arquivo = sg.popup_get_file('Selecione o arquivo', 'Cabeçalho de ordem', icon=r'static/calculator.ico')
@@ -96,7 +96,7 @@ class ProgramPainel:
                 if event == 'Definir login':
                     LoginSAP().RunApp()
 
-                if event == 'Limpar' or event == "Limpar" + "_Enter":
+                if event == 'Limpar':
                     self.window.find_element('__Output__').update('')
 
                 # Link do GitHub
