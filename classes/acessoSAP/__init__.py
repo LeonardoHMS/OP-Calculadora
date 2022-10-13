@@ -108,15 +108,7 @@ class SapGui(object):
         self.session.findById("wnd[2]").sendVKey(0)
         self.session.findById("wnd[1]").sendVKey(8)
         self.session.findById("wnd[0]").sendVKey(8)
-        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").setCurrentCell(-1, "DUMPS")
-        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectColumn("DUMPS")
-        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
-        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&MB_FILTER")
-        self.session.findById("wnd[1]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/btn%_%%DYN001_%_APP_%-VALU_PUSH").press()
-        self.session.findById("wnd[2]/usr/tabsTAB_STRIP/tabpNOSV").Select()
-        self.session.findById("wnd[2]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "X"
-        self.session.findById("wnd[2]").sendVKey(8)
-        self.session.findById("wnd[1]").sendVKey(0)
+
 
     def gerarPlanilha(self, salvar, nome):
         """
