@@ -5,7 +5,6 @@
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
 import win32com.client as win32
-from time import sleep
 import subprocess
 import time
 
@@ -17,15 +16,6 @@ class SapGui(object):
             - users (str): Usuário do Login do SAP
             - password (str): Senha do Login do SAP
             - acess_name (str): Nome da conexão do acesso ao SAP
-        Metodos:
-            conexaoSAP: Entra na janela da transação fornecida para acessar
-            - sapGetCabecalho: A partir da transação 'COOIS' irá pegar o Cabeçalho de ordens
-                 utilizando alguns filtros de pesquisa
-            - sapGetComponentes: A partir da transação 'COOIS irá pegar os Componentes de ordens
-                 utilizando alguns filtros de pesquisa
-            - gerarPlanilha: Exporta uma planilha da transação 'COOIS'
-                atributos:
-                    - salvar (str): Diretório para salvar a planilha
     """
     def __init__(self, users, password, acess_name):
         self.users = users
@@ -40,16 +30,11 @@ class SapGui(object):
         except:
             self.path = r'C:\Program Files (x86)\SAP\FrontEnd\SAPgui\saplogon.exe'
             subprocess.Popen(self.path)
-            time.sleep(3)
+            time.sleep(7) # PC que uso é muito lento, dependendo esse valor de espera pode ser menor
 
             self.SapGuiAuto = win32.GetObject('SAPGUI')
             aplicativo = self.SapGuiAuto.GetScriptingEngine
-            while True:
-                try:
-                    self.connection = aplicativo.OpenConnection(self.acess_name, True)
-                    break
-                except:
-                    sleep(2)
+            self.connection = aplicativo.OpenConnection(self.acess_name, True)
             self.session = self.connection.Children(0)
             time.sleep(3)
 
@@ -124,3 +109,8 @@ class SapGui(object):
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar
         self.session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = nome
         self.session.findById("wnd[1]").sendVKey(0)
+
+
+if __name__ == '__main__':
+    test = SapGui('user', 'password', 'acess')
+    test.conexaoSap('COOIS')
