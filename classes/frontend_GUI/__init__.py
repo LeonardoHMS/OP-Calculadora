@@ -15,7 +15,7 @@ class ProgramPainel:
         _layout = [
             [sg.Menu([['Arquivos', ['Refugos', 'Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
-                ['Automático',['SAP - ENTE', 'Definir login']],['Opções', ['H. Extra']]])
+                ['Automático',['SAP - ENTE', 'Definir login']]])
             ],
             [
                 sg.Text('Dia Início'),
@@ -39,7 +39,7 @@ class ProgramPainel:
                 sg.Input(key= 'parada', size=_size_Input), 
                 sg.Text(f'{"By: LEONARDOHMS"}',enable_events=True, text_color=('black'), font='Arial, 10')
             ],
-            [sg.Button('Confirmar', bind_return_key=True), sg.Button('Limpar'), sg.Checkbox('Hora Extra', key='extra')],
+            [sg.Button('Confirmar', bind_return_key=True), sg.Button('Limpar')],
             [sg.Multiline(size=(35, 15), key='__Output__', font=_font_str, do_not_clear=False, disabled=True)]
         ]
         # Janela
@@ -96,9 +96,6 @@ class ProgramPainel:
                 if event == 'Definir login':
                     LoginSAP().RunApp()
 
-                if event == 'H. Extra':
-                    DefinirExtra().RunApp()
-
                 if event == 'Limpar':
                     self.window.find_element('__Output__').update('')
 
@@ -114,7 +111,7 @@ class ProgramPainel:
                 # Será feita toda a conta matemática para gerar a quantidade em minutos do tempo de produção
                 if event == 'Confirmar':
                     resultados = (funcoes.calcular_horario(self.values['inicio'], self.values['fim'],
-                    self.values['operadores'], self.values['parada'].strip(), self.values['d_inicio'], self.values['d_fim'], self.values['extra'])) # Função para calcular o horário
+                    self.values['operadores'], self.values['parada'].strip(), self.values['d_inicio'], self.values['d_fim'])) # Função para calcular o horário
                     if resultados != False:
                         sg.cprint(f'Tempo da Maquina: {resultados[0]:.0f} Minutos.')
                         sg.cprint(f'Tempo de Mão humana: {resultados[1]:.0f} Minutos.')
@@ -147,27 +144,6 @@ class LoginSAP():
             sg.cprint('Dados Fornecidos!!')
             self.window.close()
 
-
-class DefinirExtra():
-    def __init__(self):
-        size_Input = (7,1)
-        sg.change_look_and_feel('DarkGrey4')
-        layout = [
-            [sg.Text('Início'), sg.Input(key='inicio', size=size_Input)],
-            [sg.Text('Fim  '), sg.Input(key='fim', size=size_Input)],
-            [sg.Button('Confirmar')]
-        ]
-        self.window = sg.Window('Horário Extra', icon=r'static/calculator.ico').layout(layout)
-
-    def RunApp(self):
-        event, self.values = self.window.Read()
-        if event == sg.WIN_CLOSED:
-            self.window.close()
-        if event == 'Confirmar':
-            if not self.values:
-                funcoes.setHoraExtra(self.values['inicio'], self.values['fim'])
-                sg.cprint('Dados Fornecidos!!')
-            self.window.close()
 
 class CalculoRefugo():
 

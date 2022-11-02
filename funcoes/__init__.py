@@ -54,7 +54,15 @@ def somente_numeros(numeros):
     return numeros
 
 
-def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim, extra):
+def calcular_intervalo(comeco, fim):
+    comeco = timedelta(hours=int(comeco[0]), minutes=int(comeco[1]))
+    fim = timedelta(hours=int(fim[0]), minutes=int(fim[1]))
+    dif = comeco - fim
+    print(int(dif.seconds / 60))
+    return int(dif.seconds / 60)
+
+
+def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     '''Função para capturar o horário fornecido pelo usuário;
     --> Faz o calculo do tempo entre os dois horários com retorno em minutos
     - inicio: Horário inicial da produção
@@ -64,6 +72,8 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim, extra):
     - d_inicio: Dia inícial da produção
     - d_fim: Dia final da produção
     '''
+    inicio_expediente = [int(inicio[:2]), int(inicio[2:])]
+    fim_expediente = [int(fim[:2]), int(fim[2:])]
     if '-' in d_inicio and d_fim:
         d_inicio = d_inicio.split('-')
         d_fim = d_fim.split('-')
@@ -95,8 +105,8 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim, extra):
             dia_semana = DIAS[indice_semana]
             if d_inicio.hour == 11 and d_inicio.minute == 35:
                 d_inicio += timedelta(minutes=90)
-            elif d_inicio.hour == 17 and d_inicio.minute == 28:
-                d_inicio += timedelta(minutes=822)
+            elif d_inicio.hour == fim_expediente[0] and d_inicio.minute == fim_expediente[1]:
+                d_inicio += timedelta(minutes=calcular_intervalo(inicio_expediente, fim_expediente))
             else:
                 d_inicio += timedelta(minutes=1)
                 resultado += 1
@@ -232,3 +242,7 @@ def getHoraExtra():
     return [settings['In_Extra'],
             settings['Fim_Extra']
         ]
+
+
+if __name__ == '__main__':
+    print(calcular_horario('0845', '1728', '2', '0', '02-11-2022', '02-11-2022'))
