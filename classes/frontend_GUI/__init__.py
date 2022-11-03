@@ -43,7 +43,7 @@ class ProgramPainel:
             [sg.Multiline(size=(35, 15), key='__Output__', font=_font_str, do_not_clear=False, disabled=True)]
         ]
         # Janela
-        self.window = sg.Window('OP Calculator v2.14', icon=r'static/calculator.ico', return_keyboard_events=True, use_default_focus=False).layout(_layout)
+        self.window = sg.Window('OP Calculator v2.52', icon=r'static/calculator.ico', return_keyboard_events=True, use_default_focus=False).layout(_layout)
         sg.cprint_set_output_destination(multiline_key='__Output__', window=self.window)
     # Função da classe para a construção de todos os eventos de botões
     def run(self):

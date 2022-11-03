@@ -93,6 +93,7 @@ class SapGui(object):
         self.session.findById("wnd[2]").sendVKey(0)
         self.session.findById("wnd[1]").sendVKey(8)
         self.session.findById("wnd[0]").sendVKey(8)
+        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
 
 
     def gerarPlanilha(self, salvar, nome):

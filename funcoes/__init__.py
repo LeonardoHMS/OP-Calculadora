@@ -193,8 +193,6 @@ def createDirectory():
             informacoes['Login'] = 'Undefined'
             informacoes['Senha'] = 'Undefined'
             informacoes['AcessoSAP'] = 'Undefined'
-            informacoes['In_Extra'] = '0710'
-            informacoes['Fim_Extra'] = '1928'
             json.dump(informacoes, file)
             settings = json.load(file)
         return settings
@@ -226,21 +224,6 @@ def getLoginSAP():
     return [settings['Login'],
             settings['Senha'], 
             settings['AcessoSAP']
-        ]
-
-
-def setHoraExtra(inicio, fim):
-    settings = createDirectory()
-    settings['In_Extra'] = inicio
-    settings['Fim_Extra'] = fim
-    with open(r'static\Settings.json', 'w') as file:
-        json.dump(settings, file)
-
-
-def getHoraExtra():
-    settings = createDirectory()
-    return [settings['In_Extra'],
-            settings['Fim_Extra']
         ]
 
 
