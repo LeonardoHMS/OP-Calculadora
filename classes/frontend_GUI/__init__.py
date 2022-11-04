@@ -15,7 +15,7 @@ class ProgramPainel:
         _layout = [
             [sg.Menu([['Arquivos', ['Refugos', 'Ajuda', 'Sair']],
                 ['Planilhas', ['Cabeçalho', 'Componentes', 'Tempo Operações', 'Definições']],
-                ['Automático',['SAP - ENTE', 'Definir login']]])
+                ['Automático',['SAP - ENTE', 'Definir login', 'Teste Sem Planilha']]])
             ],
             [
                 sg.Text('Dia Início'),
@@ -95,6 +95,12 @@ class ProgramPainel:
 
                 if event == 'Definir login':
                     LoginSAP().RunApp()
+
+                if event == 'Teste Sem Planilha':
+                    usuario, senha, acessoSAP = funcoes.getLoginSAP()
+                    Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
+                    Sap_cab.conexaoSap('COOIS')
+                    Sap_cab.GetCabecalhoSemPlanilha()
 
                 if event == 'Limpar':
                     self.window.find_element('__Output__').update('')

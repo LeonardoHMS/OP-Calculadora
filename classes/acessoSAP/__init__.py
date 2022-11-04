@@ -4,7 +4,9 @@
 # Integração com SAP GUI Scripting API
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
+from funcoes import getDiretorio
 import win32com.client as win32
+import pandas as pd
 import subprocess
 import time
 
@@ -110,6 +112,46 @@ class SapGui(object):
         self.session.findById("wnd[1]/usr/ctxtDY_PATH").text = salvar
         self.session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = nome
         self.session.findById("wnd[1]").sendVKey(0)
+
+    def GetCabecalhoSemPlanilha(self):
+        self.destino = getDiretorio()
+        linha = []
+        cabecalho = ['ordem', 'material', 'nome material', 'numero lista técnica', 'status da ordem', 'quantidade', 'quantidade produzida', 'quantidade fornecida', 'inicio', 'fim', 'MRP', 'planejador MRP', 'data criação', 'modificado', 'data de modificação', 'explosão lista técnica', 'inicio', 'fim', 'outro inicio', 'outro fim', 'texto']
+
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
+        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
+        self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/ctxtRSCSEL_255-SLOW_E[1,0]").text = "z04"
+        self.session.findById("wnd[0]").sendVKey(8)
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/chkP_KZ_E1").Selected = True
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/chkP_KZ_E2").Selected = True
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST1").text = "ente"
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/ctxtP_SYST2").text = "ence"
+        self.session.findById("wnd[0]").sendVKey(8)
+        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&NAVIGATION_PROFILE_TOOLBAR_EXPAND")
+        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").selectColumn("IGMNG")
+        self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarButton("&MB_FILTER")
+        self.session.findById("wnd[1]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/ctxt%%DYN001-LOW").text = ""
+        self.session.findById("wnd[1]/usr/ssub%_SUBSCREEN_FREESEL:SAPLSSEL:1105/btn%_%%DYN002_%_APP_%-VALU_PUSH").press()
+        self.session.findById("wnd[2]/usr/tabsTAB_STRIP/tabpNOSV").Select()
+        self.session.findById("wnd[2]/usr/tabsTAB_STRIP/tabpNOSV/ssubSCREEN_HEADER:SAPLALDB:3030/tblSAPLALDBSINGLE_E/txtRSCSEL_255-SLOW_E[1,0]").text = "0"
+        self.session.findById("wnd[2]").sendVKey(8)
+        self.session.findById("wnd[1]").sendVKey(0)
+
+        myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
+        allRows = myGrid.RowCount - 1 # Número de SAP Linhas
+        AllCols = myGrid.ColumnCount - 1 # Número de SAP Colunas
+        columns = myGrid.ColumnOrder #SAP column names in order in SAP window
+        planilha = pd.DataFrame()
+        for item in cabecalho:
+            planilha[item] = ''
+
+        for j in allRows:
+            myGrid.firstVisibleRow = j
+            for i in AllCols:
+                linha.append(myGrid.GetCellValue(j, columns(i)))
+            planilha.loc[j+1] = linha
+                #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
+        planilha.to_excel(f'{self.destino}/Cabecalho.xlsx', index=False)
 
 
 if __name__ == '__main__':
