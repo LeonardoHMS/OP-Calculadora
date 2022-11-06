@@ -98,9 +98,12 @@ class ProgramPainel:
 
                 if event == 'Teste Sem Planilha':
                     usuario, senha, acessoSAP = funcoes.getLoginSAP()
+                    destino = funcoes.getDiretorio()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
-                    Sap_cab.GetCabecalhoSemPlanilha()
+                    Sap_cab.GetCabecalhoSemPlanilha(destino)
+                    Sap_cab.conexaoSap('COOIS')
+                    Sap_cab.GetComponentesSemPlanilha(destino, 'ordens.txt')
 
                 if event == 'Limpar':
                     self.window.find_element('__Output__').update('')

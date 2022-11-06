@@ -4,7 +4,6 @@
 # Integração com SAP GUI Scripting API
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
-from funcoes import getDiretorio
 import win32com.client as win32
 import pandas as pd
 import subprocess
@@ -103,7 +102,7 @@ class SapGui(object):
             Exporta uma planilha da transação 'COOIS'
             É necessário já estar dentro da transação para fornecer essa planilha
             Atributos:
-                - salvar (str): Local a onde será salva a planilha
+                - salvar (str): Local onde será salva a planilha
                 - nome (str): Nome da planilha para salvar com a Extensão do arquivo
         """
         self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell").pressToolbarContextButton("&MB_EXPORT")
@@ -113,10 +112,16 @@ class SapGui(object):
         self.session.findById("wnd[1]/usr/ctxtDY_FILENAME").text = nome
         self.session.findById("wnd[1]").sendVKey(0)
 
-    def GetCabecalhoSemPlanilha(self):
-        self.destino = getDiretorio()
+
+    def GetCabecalhoSemPlanilha(self, destino):
+        """
+            Extrai as informações na transação "COOIS" sem a necessidade de gerar uma planilha no SAP
+            As informações são armazenadas e filtradas por uma DateFrame através do Pandas e salva o arquivo no lugar específicado pelo Parâmetro
+            Atributos:
+                - destino (str): Local onde será salva a planilha já filtrada
+        """
         linha = []
-        cabecalho = ['ordem', 'material', 'nome material', 'numero lista técnica', 'status da ordem', 'quantidade', 'quantidade produzida', 'quantidade fornecida', 'inicio', 'fim', 'MRP', 'planejador MRP', 'data criação', 'modificado', 'data de modificação', 'explosão lista técnica', 'inicio', 'fim', 'outro inicio', 'outro fim', 'texto']
+        titulo = ['Ordem', 'Material', 'Ordem do Cliente', 'Item ord.cliente', 'Texto breve material', 'Status do sistema', 'Data-base iníc.', 'Data conclusão (prog.)', 'Quantidade da ordem (GMEIN)', 'Quantidade boa confirmada (GMEIN)', 'Qtd.fornecida (GMEIN)', 'Unidade de medida (=GMEIN)', 'Depósito', 'Planejador MRP', 'Versão de produção', 'Data de entrada', 'Criado por', 'Change date', 'Último modificador', 'Dads.explosão lis.tarefas/LisTéc.', 'Data fim real']
 
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
@@ -142,16 +147,61 @@ class SapGui(object):
         AllCols = myGrid.ColumnCount - 1 # Número de SAP Colunas
         columns = myGrid.ColumnOrder #SAP column names in order in SAP window
         planilha = pd.DataFrame()
-        for item in cabecalho:
+        for item in titulo:
             planilha[item] = ''
 
         for j in allRows:
             myGrid.firstVisibleRow = j
             for i in AllCols:
                 linha.append(myGrid.GetCellValue(j, columns(i)))
-            planilha.loc[j+1] = linha
                 #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
-        planilha.to_excel(f'{self.destino}/Cabecalho.xlsx', index=False)
+            planilha.loc[j+1] = linha
+            linha = []
+        planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
+        remove_line = planilha[planilha['Qtde Falta'] > 0].index
+        planilha = planilha.drop(remove_line)
+        planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
+        with open(f'{destino}\ordens.txt', 'w+') as txt:
+            txt.write(planilha['Ordem'].to_string(index=False))
+        planilha.to_excel(f'{destino}/Cabecalho.xlsx', index=False)
+
+    
+    def GetComponentesSemPlanilha(self, local, nome_txt):
+        """
+            Extrai os componentes das Ordens de Produção fornecidas
+            As informações são lidas e armazenadas em um DateFrame Pandas e salvas no lugar específicado pelo parâmetro
+            Atributos:
+                - local (str): Local aonde está o arquivo .txt com os números das ordens, e também aonde será salva a planilha com os componentes
+                - nome_txt (str): Nome do arquivo .txt que deve ser usado para capturar o número das Ordens de Produção
+        """
+        linha = []
+        titulos = ['Ordem', 'Material', 'Txt.brv.material', 'Lista comp.item', 'Requirement date', 'Qtd.necessária (EINHEIT)', 'Qtd.retirada (EINHEIT)', 'Unid.medida básica (=EINHEIT)', 'Depósito', 'Centro de trabalho', 'Descrição do centro de trabalho', 'Refugo da operação %', 'Status do sistema', 'Texto']
+        
+        self.session.findById("wnd[0]/usr/ssub%_SUBSCREEN_TOPBLOCK:PPIO_ENTRY:1100/cmbPPIO_ENTRY_SC1100-PPIO_LISTTYP").key = "PPIOM000"
+        self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_AUFNR_%_APP_%-VALU_PUSH").press()
+        self.session.findById("wnd[1]/tbar[0]/btn[23]").press()
+        self.session.findById("wnd[2]/usr/ctxtDY_PATH").text = local
+        self.session.findById("wnd[2]/usr/ctxtDY_FILENAME").text = nome_txt
+        self.session.findById("wnd[2]").sendVKey(0)
+        self.session.findById("wnd[1]").sendVKey(8)
+        self.session.findById("wnd[0]").sendVKey(8)       
+        
+        myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
+        allRows = myGrid.RowCount - 1 # Número de SAP Linhas
+        AllCols = myGrid.ColumnCount - 1 # Número de SAP Colunas
+        columns = myGrid.ColumnOrder #SAP nomes de colunas em ordem na janela SAP
+        planilha = pd.DataFrame()
+        for item in titulos:
+            planilha[item] = ''
+
+        for j in allRows:
+            myGrid.firstVisibleRow = j
+            for i in AllCols:
+                linha.append(myGrid.GetCellValue(j, columns(i)))
+                #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
+            planilha.loc[j+1] = linha
+            linha = []
+        planilha.to_excel(f'{local}/Componentes.xlsx', index=False)
 
 
 if __name__ == '__main__':
