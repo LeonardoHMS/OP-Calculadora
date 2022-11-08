@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
+import win32clipboard
 import pandas as pd
-import pyperclip
 import json
 
 current_year = datetime.now().strftime('%Y')
@@ -138,7 +138,9 @@ def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
     planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
     if copy:
         ordens = planilha['Ordem'].to_string(index=False)
-        pyperclip.copy(ordens)
+        win32clipboard.OpenClipboard()
+        win32clipboard.SetClipboardData(win32clipboard.CF_UNICODETEXT, ordens)
+        win32clipboard.CloseClipboard()
     if text:
         with open(f'{destino}\ordens.txt', 'w+') as txt:
             txt.write(planilha['Ordem'].to_string(index=False))
