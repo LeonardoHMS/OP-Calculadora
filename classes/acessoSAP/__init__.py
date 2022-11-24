@@ -120,8 +120,7 @@ class SapGui(object):
             Atributos:
                 - destino (str): Local onde será salva a planilha já filtrada
         """
-        linha = []
-        titulo = ['Ordem', 'Material', 'Ordem do Cliente', 'Item ord.cliente', 'Texto breve material', 'Status do sistema', 'Data-base iníc.', 'Data conclusão (prog.)', 'Quantidade da ordem (GMEIN)', 'Quantidade boa confirmada (GMEIN)', 'Qtd.fornecida (GMEIN)', 'Unidade de medida (=GMEIN)', 'Depósito', 'Planejador MRP', 'Versão de produção', 'Data de entrada', 'Criado por', 'Change date', 'Último modificador', 'Dads.explosão lis.tarefas/LisTéc.', 'Data fim real']
+        colunas = ['Ordem', 'Material', 'Ordem do Cliente', 'Item ord.cliente', 'Texto breve material', 'Status do sistema', 'Data-base iníc.', 'Data conclusão (prog.)', 'Quantidade da ordem (GMEIN)', 'Quantidade boa confirmada (GMEIN)', 'Qtd.fornecida (GMEIN)', 'Unidade de medida (=GMEIN)', 'Depósito', 'Planejador MRP', 'Versão de produção', 'Data de entrada', 'Criado por', 'Change date', 'Último modificador', 'Dads.explosão lis.tarefas/LisTéc.', 'Data fim real']
 
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_DISPO_%_APP_%-VALU_PUSH").press()
         self.session.findById("wnd[1]/usr/tabsTAB_STRIP/tabpNOSV").Select()
@@ -143,27 +142,27 @@ class SapGui(object):
         self.session.findById("wnd[1]").sendVKey(0)
 
         myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
-        allRows = myGrid.RowCount - 1 # Número de SAP Linhas
-        AllCols = myGrid.ColumnCount - 1 # Número de SAP Colunas
+        allRows = int(myGrid.RowCount) - 1 # Número de SAP Linhas
+        allCols = int(myGrid.ColumnCount) - 1 # Número de SAP Colunas
         columns = myGrid.ColumnOrder #SAP column names in order in SAP window
-        planilha = pd.DataFrame()
-        for item in titulo:
-            planilha[item] = ''
+        linha = []
+        total_linhas = []
 
-        for j in allRows:
+        for j in range(allRows):
             myGrid.firstVisibleRow = j
-            for i in AllCols:
+            for i in range(allCols):
                 linha.append(myGrid.GetCellValue(j, columns(i)))
                 #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
-            planilha.loc[j+1] = linha
+            total_linhas.append(linha)
             linha = []
+        planilha = pd.DataFrame(total_linhas, columns=colunas)
         planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
         remove_line = planilha[planilha['Qtde Falta'] > 0].index
         planilha = planilha.drop(remove_line)
         planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
         with open(f'{destino}\ordens.txt', 'w+') as txt:
             txt.write(planilha['Ordem'].to_string(index=False))
-        planilha.to_excel(f'{destino}/Cabecalho.xlsx', index=False)
+        planilha.to_excel(f'{destino}/Cabecalho.xlsx', sheet_name='Cabeçalho', index=False)
 
     
     def GetComponentesSemPlanilha(self, local, nome_txt):
@@ -175,7 +174,8 @@ class SapGui(object):
                 - nome_txt (str): Nome do arquivo .txt que deve ser usado para capturar o número das Ordens de Produção
         """
         linha = []
-        titulos = ['Ordem', 'Material', 'Txt.brv.material', 'Lista comp.item', 'Requirement date', 'Qtd.necessária (EINHEIT)', 'Qtd.retirada (EINHEIT)', 'Unid.medida básica (=EINHEIT)', 'Depósito', 'Centro de trabalho', 'Descrição do centro de trabalho', 'Refugo da operação %', 'Status do sistema', 'Texto']
+        total_linhas = []
+        colunas = ['Ordem', 'Material', 'Txt.brv.material', 'Lista comp.item', 'Requirement date', 'Qtd.necessária (EINHEIT)', 'Qtd.retirada (EINHEIT)', 'Unid.medida básica (=EINHEIT)', 'Depósito', 'Centro de trabalho', 'Descrição do centro de trabalho', 'Refugo da operação %', 'Status do sistema', 'Texto']
         
         self.session.findById("wnd[0]/usr/ssub%_SUBSCREEN_TOPBLOCK:PPIO_ENTRY:1100/cmbPPIO_ENTRY_SC1100-PPIO_LISTTYP").key = "PPIOM000"
         self.session.findById("wnd[0]/usr/tabsTABSTRIP_SELBLOCK/tabpSEL_00/ssub%_SUBSCREEN_SELBLOCK:PPIO_ENTRY:1200/btn%_S_AUFNR_%_APP_%-VALU_PUSH").press()
@@ -187,21 +187,21 @@ class SapGui(object):
         self.session.findById("wnd[0]").sendVKey(8)       
         
         myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
-        allRows = myGrid.RowCount - 1 # Número de SAP Linhas
-        AllCols = myGrid.ColumnCount - 1 # Número de SAP Colunas
+        allRows = int(myGrid.RowCount) - 1 # Número de SAP Linhas
+        allCols = int(myGrid.ColumnCount) - 1 # Número de SAP Colunas
         columns = myGrid.ColumnOrder #SAP nomes de colunas em ordem na janela SAP
-        planilha = pd.DataFrame()
-        for item in titulos:
-            planilha[item] = ''
 
-        for j in allRows:
+        for j in range(allRows):
             myGrid.firstVisibleRow = j
-            for i in AllCols:
+            for i in range(allCols):
                 linha.append(myGrid.GetCellValue(j, columns(i)))
                 #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
-            planilha.loc[j+1] = linha
+            total_linhas.append(linha)
             linha = []
-        planilha.to_excel(f'{local}/Componentes.xlsx', index=False)
+
+    
+        planilha = pd.DataFrame(total_linhas, columns=colunas)
+        planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)
 
 
 if __name__ == '__main__':
