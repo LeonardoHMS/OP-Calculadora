@@ -9,6 +9,9 @@ import pandas as pd
 import subprocess
 import time
 
+def printar():
+    print('passou aqui')
+
 class SapGui(object):
     """
         Cria um objeto que executa o Script do SAP GUI, desde o Login do usuário
