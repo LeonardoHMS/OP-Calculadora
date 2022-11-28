@@ -176,7 +176,6 @@ def organizar_componentes(dir_componentes):
     planilha = pd.read_excel(dir_componentes)
     planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
     planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
-    planilha['OBS'] = ''
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
 
 
