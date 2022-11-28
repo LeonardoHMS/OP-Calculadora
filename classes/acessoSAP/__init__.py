@@ -9,8 +9,6 @@ import pandas as pd
 import subprocess
 import time
 
-def printar():
-    print('passou aqui')
 
 class SapGui(object):
     """
