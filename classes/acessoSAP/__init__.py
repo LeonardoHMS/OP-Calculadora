@@ -188,8 +188,8 @@ class SapGui(object):
         self.session.findById("wnd[0]").sendVKey(8)       
         
         myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
-        allRows = int(myGrid.RowCount) - 1 # Número de SAP Linhas
-        allCols = int(myGrid.ColumnCount) - 1 # Número de SAP Colunas
+        allRows = int(myGrid.RowCount) # Número de SAP Linhas
+        allCols = int(myGrid.ColumnCount) # Número de SAP Colunas
         columns = myGrid.ColumnOrder #SAP nomes de colunas em ordem na janela SAP
 
         for j in range(allRows):
