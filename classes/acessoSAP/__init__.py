@@ -143,8 +143,8 @@ class SapGui(object):
         self.session.findById("wnd[1]").sendVKey(0)
 
         myGrid = self.session.findById("wnd[0]/usr/cntlCUSTOM/shellcont/shell/shellcont/shell")
-        allRows = int(myGrid.RowCount) - 1 # Número de SAP Linhas
-        allCols = int(myGrid.ColumnCount) - 1 # Número de SAP Colunas
+        allRows = int(myGrid.RowCount) # Número de SAP Linhas
+        allCols = int(myGrid.ColumnCount) # Número de SAP Colunas
         columns = myGrid.ColumnOrder #SAP column names in order in SAP window
         linha = []
         total_linhas = []
@@ -200,8 +200,10 @@ class SapGui(object):
             total_linhas.append(linha)
             linha = []
 
-    
+        
         planilha = pd.DataFrame(total_linhas, columns=colunas)
+        planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+        planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
         planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)
 
 
