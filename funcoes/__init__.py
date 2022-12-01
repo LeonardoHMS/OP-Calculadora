@@ -73,7 +73,6 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     - d_fim: Dia final da produção
     '''
     inicio_expediente = [int(inicio[:2]), int(inicio[2:])]
-    fim_expediente = [int(fim[:2]), int(fim[2:])]
     if '-' in d_inicio and d_fim:
         d_inicio = d_inicio.split('-')
         d_fim = d_fim.split('-')
@@ -105,8 +104,8 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
             dia_semana = DIAS[indice_semana]
             if d_inicio.hour == 11 and d_inicio.minute == 35:
                 d_inicio += timedelta(minutes=90)
-            elif d_inicio.hour == fim_expediente[0] and d_inicio.minute == fim_expediente[1]:
-                d_inicio += timedelta(minutes=calcular_intervalo(inicio_expediente, fim_expediente))
+            elif d_inicio.hour == 17 and d_inicio.minute == 28:
+                d_inicio += timedelta(minutes=822)
             else:
                 d_inicio += timedelta(minutes=1)
                 resultado += 1

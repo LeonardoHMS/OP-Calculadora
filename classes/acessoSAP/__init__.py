@@ -152,11 +152,13 @@ class SapGui(object):
         for j in range(allRows):
             myGrid.firstVisibleRow = j
             for i in range(allCols):
-                linha.append(myGrid.GetCellValue(j, columns(i)))
+                linha.append(myGrid.GetCellValue(j, columns(i))) # Todas as informações irão vir em formato object do Pandas
                 #Cells(j + 1, i + 1).Value = myGrid.GetCellValue(j, columns(i))
             total_linhas.append(linha)
             linha = []
         planilha = pd.DataFrame(total_linhas, columns=colunas)
+        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].astype('int')
+        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].astype('int')
         planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
         remove_line = planilha[planilha['Qtde Falta'] > 0].index
         planilha = planilha.drop(remove_line)
