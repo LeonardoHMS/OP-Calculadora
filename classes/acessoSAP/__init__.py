@@ -204,6 +204,8 @@ class SapGui(object):
 
         
         planilha = pd.DataFrame(total_linhas, columns=colunas)
+        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].astype('float')
+        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].astype('float')
         planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
         planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
         planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)
