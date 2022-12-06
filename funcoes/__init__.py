@@ -127,6 +127,10 @@ def text_popup():
             """
     return texto
 
+def replace_pontos(valor):
+    valor = valor.replace('.', '')
+    return valor
+
 # Funções para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
     destino = getDiretorio()
