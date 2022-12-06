@@ -4,6 +4,7 @@
 # Integração com SAP GUI Scripting API
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
+from funcoes import replace_pontos
 import win32com.client as win32
 import pandas as pd
 import subprocess
@@ -157,8 +158,17 @@ class SapGui(object):
             total_linhas.append(linha)
             linha = []
         planilha = pd.DataFrame(total_linhas, columns=colunas)
-        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].astype('int')
-        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].astype('int')
+
+
+        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].apply(replace_pontos)
+        planilha['Quantidade boa confirmada (GMEIN)'] = planilha['Quantidade boa confirmada (GMEIN)'].apply(replace_pontos)
+        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].apply(replace_pontos)
+
+        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].apply(pd.to_numeric)
+        planilha['Quantidade boa confirmada (GMEIN)'] = planilha['Quantidade boa confirmada (GMEIN)'].apply(pd.to_numeric)
+        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].apply(pd.to_numeric)
+
+
         planilha.insert(11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
         remove_line = planilha[planilha['Qtde Falta'] > 0].index
         planilha = planilha.drop(remove_line)
@@ -204,8 +214,15 @@ class SapGui(object):
 
         
         planilha = pd.DataFrame(total_linhas, columns=colunas)
-        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].astype('float')
-        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].astype('float')
+
+
+        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(replace_pontos)
+        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(replace_pontos)
+
+        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(pd.to_numeric)
+        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(pd.to_numeric)
+
+       
         planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
         planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
         planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)

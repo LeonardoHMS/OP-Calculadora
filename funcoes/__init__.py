@@ -128,7 +128,8 @@ def text_popup():
     return texto
 
 def replace_pontos(valor):
-    valor = valor.replace('.', '')
+    # Função usada para gerar as planilhas do SAP de forma automatica
+    valor = valor.replace('.', '').replace(',', '.')
     return valor
 
 # Funções para Data Science para analisar somente as produções que foram finalizadas
