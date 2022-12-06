@@ -175,9 +175,8 @@ class SapGui(object):
         planilha.loc[planilha['Versão de produção'] == '0', 'Versão de produção'] = 0
         with open(f'{destino}\ordens.txt', 'w+') as txt:
             txt.write(planilha['Ordem'].to_string(index=False))
-        planilha.to_excel(f'{destino}/Cabecalho.xlsx', sheet_name='Cabeçalho', index=False)
+        
 
-    
     def GetComponentesSemPlanilha(self, local, nome_txt):
         """
             Extrai os componentes das Ordens de Produção fornecidas
@@ -224,7 +223,7 @@ class SapGui(object):
 
        
         planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
-        planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
+        #planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
         planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)
 
 
