@@ -127,10 +127,27 @@ def text_popup():
             """
     return texto
 
+
 def replace_pontos(valor):
-    # Função usada para gerar as planilhas do SAP de forma automatica
+    # Função usada para gerar as planilhas do SAP de forma automática
     valor = valor.replace('.', '').replace(',', '.')
     return valor
+
+
+def replace_barra(valor):
+    # Função usada para gerar as planilhas do SAP de forma automática
+    valor = valor.replace('.', '/')
+    return valor
+
+
+def convert_int(value):
+    # Função usada para gerar as planilhas do SAP de forma automática
+    try:
+        value = int(value)
+    except:
+        pass
+    return value
+
 
 # Funções para Data Science para analisar somente as produções que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, copy=False, text=False):

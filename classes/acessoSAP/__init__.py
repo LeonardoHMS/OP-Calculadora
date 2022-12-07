@@ -4,7 +4,7 @@
 # Integração com SAP GUI Scripting API
 # Leonardo Mantovani github.com/LeonardoHMS
 # -------------------------
-from funcoes import replace_pontos
+from funcoes import replace_pontos, convert_int, replace_barra
 import win32com.client as win32
 import pandas as pd
 import subprocess
@@ -214,16 +214,26 @@ class SapGui(object):
         
         planilha = pd.DataFrame(total_linhas, columns=colunas)
 
-
+        ###############################################################
+        #
+        # Conversões de Dados para reconhecer valores como números e não somente textos
+        #
+        ###############################################################
         planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(replace_pontos)
         planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(replace_pontos)
+        planilha['Refugo da operação %'] = planilha['Refugo da operação %'].apply(replace_pontos)
+        planilha['Requirement date'] = planilha['Requirement date'].apply(replace_barra)
 
+        planilha['Ordem'] = planilha['Ordem'].apply(pd.to_numeric)
+        planilha['Material'] = planilha['Material'].apply(pd.to_numeric)
+        planilha['Lista comp.item'] = planilha['Lista comp.item'].apply(pd.to_numeric)
+        planilha['Centro de trabalho'] = planilha['Centro de trabalho'].apply(convert_int)
+        planilha['Refugo da operação %'] = planilha['Refugo da operação %'].apply(pd.to_numeric)
         planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(pd.to_numeric)
         planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(pd.to_numeric)
 
        
         planilha.insert(7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
-        #planilha['Requirement date'] = planilha['Requirement date'].dt.strftime('%d/%m/%Y')
         planilha.to_excel(f'{local}/Componentes.xlsx', sheet_name='Componentes', index=False)
 
 
