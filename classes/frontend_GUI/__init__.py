@@ -123,6 +123,7 @@ class ProgramPainel:
                     Sap_cab.GetCabecalhoSemPlanilha(destino)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.GetComponentesSemPlanilha(destino, 'ordens.txt')
+                    sg.popup('Relatório extraído com sucesso!!!', title='Confirmação', icon=r'static/calculator.ico')
 
                 if event == 'Limpar':
                     self.window.find_element('__Output__').update('')
