@@ -1,7 +1,8 @@
-from datetime import timedelta, datetime
-import win32clipboard
-import pandas as pd
 import json
+from datetime import datetime, timedelta
+
+import pandas as pd
+import win32clipboard
 
 current_year = datetime.now().strftime('%Y')
 
@@ -47,7 +48,7 @@ def somente_numeros(numeros):
         - numeros: Números usados para formar um horário
     """
     for item in numeros:
-        if item.isnumeric() == False:
+        if not item.isnumeric():
             numeros = numeros.replace(item, '')
     if len(numeros) != 4:
         return False
@@ -74,7 +75,6 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     - d_inicio: Dia inícial da produção
     - d_fim: Dia final da produção
     '''
-    inicio_expediente = [int(inicio[:2]), int(inicio[2:])]
     if '-' in d_inicio and d_fim:
         d_inicio = d_inicio.split('-')
         d_fim = d_fim.split('-')
@@ -115,20 +115,24 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
                 d_inicio += timedelta(days=2)
             elif dia_semana == 'Domingo':
                 d_inicio += timedelta(days=1)
-        return (resultado - int(parada), resultado * int(operadores) - (int(parada) * int(operadores)))
-    except:
-        return False  # Os retornos de falsos são para printar o erro no output do programa
+        return (
+            resultado - int(parada),
+            resultado * int(operadores) - (int(parada) * int(operadores))
+        )
+    except Exception:
+        # Os retornos de falsos são para printar o erro no output do programa
+        return False
 
-# Função criada para não ficar muitas informações dentro da classe, pode ser usada para mais Textos futuramente !!!
+# Função criada para não ficar muitas informações dentro da classe,
+# pode ser usada para mais Textos futuramente !!!
 
 
 def text_popup():
-    texto = """ 
-            Inicio: Inicio da produção
-            Fim: Fim da produção
-            Oprs.: Quantidade de operadores
-            Parada: Tempo parado sem produzir
-            """
+    texto = '\
+    Inicio: Inicio da produção\n\
+    Fim: Fim da produção\n\
+    Oprs.: Quantidade de operadores\n\
+    Parada: Tempo parado sem produzir'
     return texto
 
 
@@ -148,17 +152,21 @@ def convert_int(value):
     # Função usada para gerar as planilhas do SAP de forma automática
     try:
         value = int(value)
-    except:
+    except Exception:
         pass
     return value
 
 
-# Funções para Data Science para analisar somente as produções que foram finalizadas
+# Funções para Data Science para analisar somente as produções
+# que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
     destino = getDiretorio()
     planilha = pd.read_excel(dir_cabecalho)
     planilha.insert(
-        11, 'Qtde Falta', planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)'])
+        11,
+        'Qtde Falta',
+        planilha['Quantidade da ordem (GMEIN)'] - planilha['Qtd.fornecida (GMEIN)']  # noqa:E501
+    )
     remove_line = planilha[planilha['Qtde Falta'] > 0].index
     planilha = planilha.drop(remove_line)
     planilha.loc[planilha['Versão de produção']
@@ -176,15 +184,20 @@ def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
 def organizar_tempos_prd(dir_operacoes):
     destino = getDiretorio()
     tempos_df = pd.read_excel(dir_operacoes)
-    tempos_df = tempos_df.drop(['Data início real de execução',
-                                'Hora início real de execução',
-                                'Data fim real da execução',
-                                'Hora fim real da execução',
-                                'Grupo', 'Tipo de roteiro',
-                                'Duração processamen. (BEAZE)'], axis=1)
+    tempos_df = tempos_df.drop(
+        [
+            'Data início real de execução',
+            'Hora início real de execução',
+            'Data fim real da execução',
+            'Hora fim real da execução',
+            'Grupo', 'Tipo de roteiro',
+            'Duração processamen. (BEAZE)'
+        ],
+        axis=1
+    )
 
     tempos_df['HM'] = (tempos_df['Valor standard 2 (VGE02)'] /
-                       tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
+                       tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']  # noqa:E501
     tempos_df['Dif HM'] = tempos_df['Confirmação atividade 2 (ILE02)'] - \
         tempos_df['HM']
     tempos_df['% de Dif HM'] = tempos_df['Dif HM'] / \
@@ -194,7 +207,7 @@ def organizar_tempos_prd(dir_operacoes):
     tempos_df.loc[tempos_df['HM'] == 0, '% de Dif HM'] = str('---')
 
     tempos_df['HH'] = (tempos_df['Valor standard 3 (VGE03)'] /
-                       tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']
+                       tempos_df['Quantidade básica (MEINH)']) * tempos_df['Qtd.boa total confirmada (MEINH)']  # noqa:E501
     tempos_df['Dif HH'] = tempos_df['Atividade confirm.3 (ILE03)'] - \
         tempos_df['HH']
     tempos_df['% de Dif HH'] = tempos_df['Dif HH'] / \
@@ -210,7 +223,7 @@ def organizar_componentes(dir_componentes):
     destino = getDiretorio()
     planilha = pd.read_excel(dir_componentes)
     planilha.insert(
-        7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])
+        7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])  # noqa:E501
     planilha['Requirement date'] = planilha['Requirement date'].dt.strftime(
         '%d/%m/%Y')
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
@@ -277,4 +290,8 @@ def getDebug():
 
 
 if __name__ == '__main__':
-    print(calcular_horario('0845', '1728', '2', '0', '02-11-2022', '02-11-2022'))
+    print(calcular_horario(
+        '0845', '1728',
+        '2', '0',
+        '02-11-2022', '02-11-2022'
+    ))
