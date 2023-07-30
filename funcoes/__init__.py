@@ -42,26 +42,25 @@ DIAS = [
 ]
 
 
-def somente_numeros(numeros):
+def only_numbers(numbers):
     """ Função que deixa somentes números para formar um valor em timedelta
     --> Se a quantidade de números for diferente de 4, retorna False
-        - numeros: Números usados para formar um horário
+        - numbers: Números usados para formar um horário
     """
-    for item in numeros:
+    for item in numbers:
         if not item.isnumeric():
-            numeros = numeros.replace(item, '')
-    if len(numeros) != 4:
+            numbers = numbers.replace(item, '')
+    if len(numbers) != 4:
         return False
-    numeros = timedelta(
-        hours=int(numeros[:2]), minutes=int(numeros[2:]), seconds=00)
-    return numeros
+    numbers = timedelta(
+        hours=int(numbers[:2]), minutes=int(numbers[2:]), seconds=00)
+    return numbers
 
 
 def calcular_intervalo(comeco, fim):
     comeco = timedelta(hours=int(comeco[0]), minutes=int(comeco[1]))
     fim = timedelta(hours=int(fim[0]), minutes=int(fim[1]))
     dif = comeco - fim
-    print(int(dif.seconds / 60))
     return int(dif.seconds / 60)
 
 
@@ -86,14 +85,14 @@ def calcular_horario(inicio, fim, operadores, parada, d_inicio, d_fim):
     if operadores == '':
         operadores = 1
     try:
-        inicio = somente_numeros(inicio)
+        inicio = only_numbers(inicio)
         d_inicio = datetime(
             day=int(d_inicio[0]),
             month=int(d_inicio[1]),
             year=int(d_inicio[2]),
         )
         d_inicio += inicio
-        fim = somente_numeros(fim)
+        fim = only_numbers(fim)
         d_fim = datetime(
             day=int(d_fim[0]),
             month=int(d_fim[1]),
@@ -136,13 +135,13 @@ def text_popup():
     return texto
 
 
-def replace_pontos(valor):
+def replace_two_points(valor):
     # Função usada para gerar as planilhas do SAP de forma automática
     valor = valor.replace('.', '').replace(',', '.')
     return valor
 
 
-def replace_barra(valor):
+def replace_bar(valor):
     # Função usada para gerar as planilhas do SAP de forma automática
     valor = valor.replace('.', '/')
     return valor
@@ -160,7 +159,7 @@ def convert_int(value):
 # Funções para Data Science para analisar somente as produções
 # que foram finalizadas
 def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
-    destino = getDiretorio()
+    destino = get_directory()
     planilha = pd.read_excel(dir_cabecalho)
     planilha.insert(
         11,
@@ -177,12 +176,12 @@ def organizar_cabecalho(dir_cabecalho, copy=False, text=False):
         win32clipboard.SetClipboardData(win32clipboard.CF_UNICODETEXT, ordens)
         win32clipboard.CloseClipboard()
     if text:
-        with open(f'{destino}\ordens.txt', 'w+') as txt:
+        with open(f'{destino}/ordens.txt', 'w+') as txt:
             txt.write(planilha['Ordem'].to_string(index=False))
 
 
 def organizar_tempos_prd(dir_operacoes):
-    destino = getDiretorio()
+    destino = get_directory()
     tempos_df = pd.read_excel(dir_operacoes)
     tempos_df = tempos_df.drop(
         [
@@ -220,7 +219,7 @@ def organizar_tempos_prd(dir_operacoes):
 
 
 def organizar_componentes(dir_componentes):
-    destino = getDiretorio()
+    destino = get_directory()
     planilha = pd.read_excel(dir_componentes)
     planilha.insert(
         7, 'Qtde Falta', planilha['Qtd.necessária (EINHEIT)'] - planilha['Qtd.retirada (EINHEIT)'])  # noqa:E501
@@ -229,7 +228,7 @@ def organizar_componentes(dir_componentes):
     planilha.to_excel(f'{destino}/ComponentesNew.xlsx', index=False)
 
 
-def createDirectory():
+def create_directory():
     file_settings = r'static\Settings.json'
     try:
         with open(file_settings) as file:
@@ -248,44 +247,44 @@ def createDirectory():
         return settings
 
 
-def setDiretorio(diretorio):
-    settings = createDirectory()
-    settings['Diretorio'] = diretorio
+def set_directory(directory):
+    settings = create_directory()
+    settings['Diretorio'] = directory
     with open(r'static\Settings.json', 'w') as file:
         json.dump(settings, file)
 
 
-def getDiretorio():
-    settings = createDirectory()
+def get_directory():
+    settings = create_directory()
     return settings['Diretorio']
 
 
-def setLoginSAP(usuario, senha, acesso):
-    settings = createDirectory()
-    settings['Login'] = usuario
-    settings['Senha'] = senha
-    settings['AcessoSAP'] = acesso
+def set_login_sap(user, password, access):
+    settings = create_directory()
+    settings['Login'] = user
+    settings['Senha'] = password
+    settings['AcessoSAP'] = access
     with open(r'static\Settings.json', 'w') as file:
         json.dump(settings, file)
 
 
-def getLoginSAP():
-    settings = createDirectory()
+def get_login_sap():
+    settings = create_directory()
     return [settings['Login'],
             settings['Senha'],
             settings['AcessoSAP']
             ]
 
 
-def setDebug(debug):
-    settings = createDirectory()
+def set_debug(debug):
+    settings = create_directory()
     settings['Debug'] = debug
     with open(r'static\Settings.json', 'w') as file:
         json.dump(settings, file)
 
 
-def getDebug():
-    settings = createDirectory()
+def get_debug():
+    settings = create_directory()
     return settings['Debug']
 
 

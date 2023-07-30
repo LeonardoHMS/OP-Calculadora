@@ -10,7 +10,7 @@ import time
 import pandas as pd
 import win32com.client as win32
 
-from funcoes import convert_int, replace_barra, replace_pontos
+from funcoes import convert_int, replace_bar, replace_two_points
 
 
 class SapGui(object):
@@ -71,7 +71,8 @@ class SapGui(object):
             self.session.findById("wnd[0]").sendVKey(0)
             time.sleep(3)
         except Exception:
-            print(f'Usuário não possui acesso para a transação {transacao}')
+            ...
+            # print(f'Usuário não possui acesso para a transação {transacao}')
 
     def sapGetCabecalho(self):
         """
@@ -209,9 +210,9 @@ class SapGui(object):
             linha = []
         planilha = pd.DataFrame(total_linhas, columns=colunas)
 
-        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].apply(replace_pontos)  # noqa:E501
-        planilha['Quantidade boa confirmada (GMEIN)'] = planilha['Quantidade boa confirmada (GMEIN)'].apply(replace_pontos)  # noqa:E501
-        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].apply(replace_pontos)  # noqa:E501
+        planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].apply(replace_two_points)  # noqa:E501
+        planilha['Quantidade boa confirmada (GMEIN)'] = planilha['Quantidade boa confirmada (GMEIN)'].apply(replace_two_points)  # noqa:E501
+        planilha['Qtd.fornecida (GMEIN)'] = planilha['Qtd.fornecida (GMEIN)'].apply(replace_two_points)  # noqa:E501
 
         planilha['Quantidade da ordem (GMEIN)'] = planilha['Quantidade da ordem (GMEIN)'].apply(pd.to_numeric)  # noqa:E501
         planilha['Quantidade boa confirmada (GMEIN)'] = planilha['Quantidade boa confirmada (GMEIN)'].apply(pd.to_numeric)  # noqa:E501
@@ -284,10 +285,10 @@ class SapGui(object):
         # e não somente textos
         #
         ###############################################################
-        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(replace_pontos)  # noqa:E501
-        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(replace_pontos)  # noqa:E501
-        planilha['Refugo da operação %'] = planilha['Refugo da operação %'].apply(replace_pontos)  # noqa:E501
-        planilha['Requirement date'] = planilha['Requirement date'].apply(replace_barra)  # noqa:E501
+        planilha['Qtd.necessária (EINHEIT)'] = planilha['Qtd.necessária (EINHEIT)'].apply(replace_two_points)  # noqa:E501
+        planilha['Qtd.retirada (EINHEIT)'] = planilha['Qtd.retirada (EINHEIT)'].apply(replace_two_points)  # noqa:E501
+        planilha['Refugo da operação %'] = planilha['Refugo da operação %'].apply(replace_two_points)  # noqa:E501
+        planilha['Requirement date'] = planilha['Requirement date'].apply(replace_bar)  # noqa:E501
 
         planilha['Ordem'] = planilha['Ordem'].apply(pd.to_numeric)
         planilha['Material'] = planilha['Material'].apply(pd.to_numeric)

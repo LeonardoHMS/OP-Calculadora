@@ -13,7 +13,7 @@ from classes import acessoSAP
 
 class ProgramPainel:
     def __init__(self):
-        self.debug = funcoes.getDebug()
+        self.debug = funcoes.get_debug()
         _font_str = 'Arial, 12'
         _size_Input = (6, 1)
         sg.change_look_and_feel('DarkGrey4')
@@ -141,13 +141,13 @@ class ProgramPainel:
                         'Salvar planilhas em',
                         'Local',
                         icon=r'static/calculator.ico',
-                        default_path=funcoes.getDiretorio())
+                        default_path=funcoes.get_directory())
                     if type(destino) != NoneType and len(destino) != 0:
-                        funcoes.setDiretorio(destino)
+                        funcoes.set_directory(destino)
 
                 if event == 'SAP - ENTE':
-                    usuario, senha, acesso = funcoes.getLoginSAP()
-                    salvar = funcoes.getDiretorio()
+                    usuario, senha, acesso = funcoes.get_login_sap()
+                    salvar = funcoes.get_directory()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acesso)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.sapGetCabecalho()
@@ -164,8 +164,8 @@ class ProgramPainel:
                     LoginSAP().RunApp()
 
                 if event == 'ENTE - Sem planilha':
-                    usuario, senha, acessosap = funcoes.getLoginSAP()
-                    destino = funcoes.getDiretorio()
+                    usuario, senha, acessosap = funcoes.get_login_sap()
+                    destino = funcoes.get_directory()
                     Sap_cab = acessoSAP.SapGui(usuario, senha, acessosap)
                     Sap_cab.conexaoSap('COOIS')
                     Sap_cab.GetCabecalhoSemPlanilha(destino)
@@ -197,7 +197,7 @@ class ProgramPainel:
                 if event == 'Desenvolvedor':
                     if self.debug:
                         self.debug = False
-                        funcoes.setDebug(self.debug)
+                        funcoes.set_debug(self.debug)
                         sg.cprint('Modo Debug desativado.')
                     else:
                         teste = sg.popup_yes_no(
@@ -206,7 +206,7 @@ class ProgramPainel:
                         )
                         if teste == 'Yes':
                             self.debug = True
-                            funcoes.setDebug(self.debug)
+                            funcoes.set_debug(self.debug)
                             sg.cprint('Modo Debug ativado.')
 
                 # Será feita toda a conta matemática para gerar a quantidade
@@ -242,7 +242,7 @@ class ProgramPainel:
 
 class LoginSAP():
     def __init__(self):
-        _, _, _acesso = funcoes.getLoginSAP()
+        _, _, _acesso = funcoes.get_login_sap()
         _size_Input = (14, 1)
         sg.change_look_and_feel('DarkGrey4')
         _layout = [
@@ -268,7 +268,7 @@ class LoginSAP():
         if event == sg.WIN_CLOSED:
             self.window.close()
         if event == 'Confirmar':
-            funcoes.setLoginSAP(
+            funcoes.set_login_sap(
                 self.values['login'],
                 self.values['senha'],
                 self.values['acessosap']

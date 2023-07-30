@@ -11,7 +11,7 @@ from classes.frontend_GUI import ProgramPainel
 
 # Load Settings
 try:
-    funcoes.createDirectory()
+    funcoes.create_directory()
 except Exception:
     pass
 
